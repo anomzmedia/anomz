@@ -13,7 +13,7 @@ export default defineEventHandler(async(event) => {
 
     if(myUser.username == id) return {success:false,message:"Select other user!"};
 
-    let user = {...await userModel.findOne({username:id}).select("-password")}._doc;
+    let user = {...await userModel.findOne({username:id}).select("-password -friends")}._doc;
     if(!user) return {success:false,message:"Not found!"};
 
     let {page} = await getQuery(event);

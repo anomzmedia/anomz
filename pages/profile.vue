@@ -6,8 +6,6 @@
         ],
     });
 
-    const profileChange = ref(false);
-
     import useAPI from '~/composables/axios';
 
     const axios = useAPI();
@@ -16,65 +14,69 @@
 
     let err = ref("");
 
-    let loading = ref({
-        status:false,
-        progress:0,
-        message:null
-    });
+    let loading = ref(false);
+    let loadingValue = ref(0);
+    let loadingMessage = ref(0);
 
     let input = document.createElement('input');
     input.type = 'file';
+    input.accept = "image/*"
 
     input.addEventListener('change',(e) => {
-        loading.value = {
-            status:true,
-            progress:0,
-            message:"File uploading!"
-        };
-
+        loading.value = true;
+        loadingValue.value = 0;
+        loadingMessage.value = "File reading!";
         err.value = "";
 
         let file = e.target.files[0];
+
+        if(!file.type.includes("image")) return err.value = "Unsupport type!";
 
         let reader = new FileReader();
 
         reader.readAsDataURL(file);
         
         reader.addEventListener('loadstart',(data) => {
-            if(data.total >= 20971520) return reader.abort();
+            console.log(data)
+            if(data.total >= 20971520) {
+                err.value = "Maximum file size is 20 MB!";
+                return reader.abort();
+            }
         });
 
         reader.addEventListener('progress',(data) => {
-            loading.value.progress = (data.loaded/data.total)*100;
+            loadingValue.value = (data.loaded/data.total)*100;
         });
 
         reader.addEventListener('loadend',(data) => {
-            loading.value.status = false;
+            loading.value = false;
+            loadingMessage.value = "File readed!";
 
-            profileChange.value = true;
             myUser.value.profilePhoto = data.target.result;
         });
 
         reader.addEventListener('abort',() => {
-
         });
     });
 
     const process = async() => {
-        if(loading.value.status) return;
+        if(loading.value) return;
+
+        loading.value = true;
+        loadingMessage.value = "File uploading!";
+
         const formData = new FormData();
         formData.append("profilePhoto",input.files[0],input.files[0].name);
 
         let res = await axios.putForm(`/api/user/${myUser.value._id}`,formData,{
             onUploadProgress:(e) => {
-                loading.value.progress = e.progress*100;
-            },
-            onDownloadProgress:(e) => {
-                loading.value.progress = e.progress*100;
+                loading.value = e.progress*100;
             }
         });
         
         let data = res.data;
+    
+        console.log(data);
     };
 
     const photoChange = () => {
@@ -90,7 +92,7 @@
         </div>
         {{ loading.progress }}
         <span class="w-full h-1 bg-blue-800 block rounded-full z-10">
-            <span :style="`width: ${loading.progress}%;`" :class="`h-1 block bg-blue-600 z-50 rounded-full`"></span>
+            <span :style="`width: ${loadingValue}%;`" :class="`h-1 block bg-blue-600 z-50 rounded-full`"></span>
         </span>
         <span>Maximum photo size: 20MB</span>
         <button class="bg-green-600 hover:bg-green-800 rounded cursor-pointer py-2 px-4 focus:ring transition duration-300">Process the changes.</button>

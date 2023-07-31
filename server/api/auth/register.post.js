@@ -7,7 +7,7 @@ export default defineEventHandler(async(event) => {
         let {username,password} = body;
         if(!username || !password) return {success:false,message:"Body error!"};
 
-        if(password.length < 6) return {success:false,message:"Minumum password length is 6!"};
+        //if(password.length < 6) return {success:false,message:"Minumum password length is 6!"};
     
         let user = await userModel.create({username,password});
     

@@ -7,10 +7,10 @@ export default defineEventHandler(async(event) => {
 
     if(!id) return {success:false,message:"Param error!"};
 
-    let find = await postModel.findOne({_id:id}).populate("author","-password");
+    let find = await postModel.findOne({_id:id}).populate("author","-password -friends");
     if(!find) return {success:false,message:"Not found!"};
 
-    let comments = await commentModel.find({post:find._id}).populate("author","-password").sort("-createdAt");
+    let comments = await commentModel.find({post:find._id}).populate("author","-password -friends").sort("-createdAt");
 
     return {success:true,message:"Found!",post:find,comments};
 });

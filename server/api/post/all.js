@@ -9,7 +9,7 @@ export default defineEventHandler(async(event) => {
     if(!page) page = 0;
     page = Number(page);
     
-    let find = await postModel.find().skip(postPerPage*page).limit(postPerPage).populate("author","-password").sort("-createdAt");
+    let find = await postModel.find().skip(postPerPage*page).limit(postPerPage).populate("author","-password -friends").sort("-createdAt");
 
     return {success:true,find};
 });

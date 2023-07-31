@@ -10,6 +10,7 @@ export const getUser = async (event) => {
         if(!token) return null;
 
         let user = await jwt.verify(token,config.SECRET);
+        if(Date.now() > user.expiresIn) return null;
         user = await userModel.findOne({_id:user.user._id,password:user.user.password}).populate("friends","-password -friends");
 
         if(!user) return null;
@@ -26,6 +27,7 @@ export const getUserWithToken = async(token) => {
     try {
         if(!token) return null;
         let user = await jwt.verify(token,config.SECRET);
+        if(Date.now() > user.expiresIn) return null;
         user = await userModel.findOne({_id:user.user._id,password:user.user.password});
         if(!user) return null;
         return user;

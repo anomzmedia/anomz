@@ -12,7 +12,9 @@ export default defineEventHandler(async(event) => {
     const {content} = await readBody(event);
     if(!content) return {success:false,message:"Body err!"};
 
-    let find = await postModel.findOne({_id:id}).populate("author","-password");
+    if(content.length > 128) return {success:false,message:"Maximum comment length is 128"};
+
+    let find = await postModel.findOne({_id:id});
     if(!find) return {success:false,message:"Post not found!"};
 
     let comment = await commentModel.create({post:find._id,content,author:myUser._id});
