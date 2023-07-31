@@ -2,7 +2,28 @@ export default defineNuxtConfig({
     app:{
         head:{
             title:"anomz",
-            meta:[],
+            meta:[
+                {
+                    property:"og:title",
+                    content:"anomz"
+                },
+                {
+                    property:"og:description",
+                    content:"Anomz is anonymous social media"
+                },
+                {
+                    property:"og:image",
+                    content:"/anomzLogo.png"
+                },
+                {
+                    property:"og:url",
+                    content:"https://anomz.vercel.app/"
+                },
+                {
+                    property:"og:type",
+                    content:"website"
+                }
+            ],
             link:[
                 {
                     rel:"stylesheet",
