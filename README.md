@@ -6,11 +6,11 @@
 
 ###  Why Anomz?
 
-Because..
-Anomz never shares your information
-Easy usage
-User friendly
-Open Source
+Because:
+Anomz never shares your information.
+Easy usage.
+User friendly.
+Open Source.
 
 ###  Support
 
