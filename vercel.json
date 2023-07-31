@@ -1,0 +1,9 @@
+{
+    "framework":"nuxtjs",
+    "rewrites":[
+        {
+            "source":"wss.js",
+            "destination":"/ws"
+        }
+    ]
+}
