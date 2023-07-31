@@ -21,10 +21,10 @@ export default defineEventHandler(async(event) => {
 
     const __dirname = path.dirname(__filename);
 
-    let temp = path.join(__dirname, "..", "..", "tmp");
+    let temp = "/tmp";
     if(!fs.existsSync(temp)) fs.mkdirSync(temp);
     
-    const filePath = path.join(temp,`${Math.floor(Math.random()*Date.now()).toString(36)}${extname(profilePhoto.filename)}`);
+    const filePath = `${temp}/${Math.floor(Math.random()*Date.now()).toString(36)}${extname(profilePhoto.filename)}`
 
     fs.writeFileSync(filePath, profilePhoto.data);
 
