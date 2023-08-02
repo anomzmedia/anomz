@@ -42,6 +42,7 @@ if(!allNotifs.value) allNotifs.value = [];
     </div>
     <loadingAn v-if="loading"/>
     <div class="w-full h-full" translate="no" v-else @contextmenu.prevent>
+        <a class="fixed z-50 bottom-0 left-0 lg:block hidden" href="https://www.producthunt.com/posts/anomz?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-anomz" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=407824&theme=dark" alt="Anomz - Open&#0032;source&#0032;anonymous&#0032;social&#0032;media&#0046; | Product Hunt" style="width: 250px; height: 52px;" width="250" height="54" /></a>
         <navbar/>
         <div class="w-full h-full bg-gray-900 text-white flex flex-col items-center justify-center">
             <slot/>

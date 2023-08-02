@@ -18,7 +18,7 @@
 
 
 <template>
-    <nav v-if="!route.path.includes('dashboard')" class="fixed top-0 left-0 py-2 px-4 w-full flex flex-col lg:flex-row items-center justify-between z-50">
+    <nav v-if="!route.path.includes('dashboard')" class="fixed top-0 left-0 py-2 px-4 w-full flex flex-col lg:flex-row items-center justify-between z-40">
         <div class="w-full lg:w-auto flex flex-row items-center justify-between">
             <nuxt-link to="/" class="text-xl flex flex-row items-center gap-2"><img src="/favicon.svg" width="32" height="32" alt="">Anomz</nuxt-link>
             <i class="fa-solid fa-bars fa-2x cursor-pointer lg:hidden" @click="nav"></i>
