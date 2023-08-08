@@ -3,9 +3,9 @@ import { getUser } from "../../../util/getUser";
 
 export default defineEventHandler(async(event) => {
     const id = getRouterParams(event).id;
-    if(!id) return {success:false,message:"Username not provided!"};
+    if(!id) return {success:false,message:"Id not provided!"};
 
-    let user = await userModel.findOne({username:id}).select("-password -friends");
+    let user = await userModel.findOne({id}).select("-password -friends");
     if(!user) return {success:false,message:"Not found!"};
 
     let my = await getUser(event);

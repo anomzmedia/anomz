@@ -4,17 +4,17 @@ import { getUser } from "../../../../util/getUser";
 
 export default defineEventHandler(async(event) => {
     const id = getRouterParams(event).id;
-    if(!id) return {success:false,message:"Username not provided!"};
+    if(!id) return {success:false,message:"Id not provided!"};
 
     const myUser = await getUser(event);
     if(!myUser) return {success:false,message:"You need login!"};
 
-    if(myUser.username == id) return {success:false,message:"You can't send messages to yourself!"};
+    if(myUser.id == id) return {success:false,message:"You can't send messages to yourself!"};
 
     const {content} = await readBody(event);
     if(!content) return {success:false,message:"Body error!"};
 
-    let user = await userModel.findOne({username:id}).select("-password");
+    let user = await userModel.findOne({id}).select("-password -friends");
     if(!user) return {success:false,message:"User not found!"};
 
     let myMessage = await (await messageModel.create({from:myUser._id,to:user._id,content})).populate("from","-password");

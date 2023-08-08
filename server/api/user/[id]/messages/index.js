@@ -6,14 +6,14 @@ const messagePerPage = 20;
 
 export default defineEventHandler(async(event) => {
     const id = getRouterParams(event).id;
-    if(!id) return {success:false,message:"Username not provided!"};
+    if(!id) return {success:false,message:"Id not provided!"};
 
     const myUser = await getUser(event);
     if(!myUser) return {success:false,message:"You need login!"};
 
-    if(myUser.username == id) return {success:false,message:"Select other user!"};
+    if(myUser.id == id) return {success:false,message:"Select other user!"};
 
-    let user = {...await userModel.findOne({username:id}).select("-password -friends")}._doc;
+    let user = {...await userModel.findOne({id}).select("-password -friends")}._doc;
     if(!user) return {success:false,message:"Not found!"};
 
     let {page} = await getQuery(event);

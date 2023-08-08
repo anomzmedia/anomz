@@ -222,4 +222,8 @@
     .msgin:hover .msgcompts{
         @apply opacity-100 visible;
     }
+
+    .blue-btn{
+        @apply py-2 px-4 bg-blue-600 hover:bg-blue-800 focus:ring cursor-pointer transition duration-300 rounded;
+    }
 }

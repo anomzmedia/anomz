@@ -101,7 +101,7 @@
                             <img draggable="false" :src="post.author.profilePhoto" class="rounded-full" width="32" alt="">
                             <span class="border-2 border-green-600 text-green-600 bg-green-600 w-3 h-3 block rounded-full absolute right-[-2px] bottom-[-2px]"></span>
                         </div>
-                        <span>{{post.author.username}}</span>
+                        <span>{{post.author.id}}</span>
                     </div>
                     <nuxt-link :to="`/dashboard/post/${post._id}`" class="w-full flex flex-col overflow-auto">
                         <span class="select-text whitespace-pre-wrap">{{ post.content.slice(0,128) }}</span>

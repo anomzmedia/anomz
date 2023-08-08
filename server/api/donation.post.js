@@ -25,7 +25,6 @@ export default defineEventHandler(async(event) => {
     
         return {success:true,customer,charge};
     } catch (error) {
-        console.log(error.message)
         return {success:false,message:error.message}
     }
 });

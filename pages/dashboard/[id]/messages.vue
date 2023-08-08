@@ -14,7 +14,7 @@ const axios = useAPI();
 
 const route = useRoute();
 
-const username = route.params.id;
+const id = route.params.id;
 const myUser = useState("user");
 
 const loadingPage = ref(true);
@@ -34,7 +34,7 @@ const loadedMaxMessage = ref(false);
 const loadNewMessages = async() => {
     if(loadedMaxMessage.value) return;
 
-    let res = await axios.get(`/api/user/${username}/messages?page=${page.value}`);
+    let res = await axios.get(`/api/user/${id}/messages?page=${page.value}`);
     let data = res.data;
 
     if(data.messages.length < 1) return loadedMaxMessage.value = true;
@@ -85,11 +85,11 @@ onMounted(async() => {
     
     const router = useRouter();
 
-    if(!username) return router.push("/");
+    if(!id) return router.push("/");
 
-    if(myUser.value.username == username) router.push("/");
+    if(myUser.value.id == id) router.push("/dashboard/friends");
     
-    let res = await axios.get(`/api/user/${username}/messages`);
+    let res = await axios.get(`/api/user/${id}/messages`);
     let data = res.data;
 
     if(!data.success) return router.push("/");
@@ -115,7 +115,7 @@ onMounted(async() => {
 const send = async () => {
     if(!message.value) return;
 
-    let res = await axios.post(`/api/user/${username}/messages/create`,{
+    let res = await axios.post(`/api/user/${id}/messages/create`,{
         content:message.value
     });
 
@@ -131,7 +131,7 @@ const send = async () => {
 };
 
 const deleteMessage = async(id) => {
-    let {data} = await axios.delete(`/api/user/${username}/messages/${id}`);
+    let {data} = await axios.delete(`/api/user/${id}/messages/${id}`);
 
     messages.value = messages.value.filter((msg) => msg._id != id);
 };
@@ -182,17 +182,17 @@ const openPopup = (_id) => {
                 <modal :user="myUser" v-if="popups[myUser._id]" @close-modal="popups[myUser._id] = false"/>
                 <div @click="openPopup(user._id)" class="cursor-pointer w-full bg-gray-800 p-4 flex flex-row rounded-full items-center gap-2">
                     <img draggable="false" :src="user.profilePhoto" class="rounded-full" width="32" alt="">
-                    <h1>{{username}}</h1>
+                    <h1>{{id}}</h1>
                     <span :class="`w-4 h-4 bg-${user.active ? 'green':'gray'}-600 rounded-full`"></span>
                 </div>
                 <div @scroll="scroll" id="animatemsgs" ref="msgs" class="h-full w-full bg-gray-800 overflow-y-scroll flex flex-col rounded-lg"> <!--v-auto-animate-->
-                    <span class="w-full py-2 px-4 flex items-center justify-center text-gray-400" v-if="loadedMaxMessage">The beginning of the conversation with {{user.username}}!</span>
+                    <span class="w-full py-2 px-4 flex items-center justify-center text-gray-400" v-if="loadedMaxMessage">The beginning of the conversation with {{user.id}}!</span>
                     <div v-for="message in messages" :key="message._id" class="flex flex-col msgin w-full hover:bg-gray-700 py-2 px-4">
                         <div class="flex flex-row w-full justify-between items-center relative">
                             <div class="flex flex-col items-start select-all gap-2 w-full">
                                 <div @click="openPopup(message.from._id)" class="flex flex-row gap-2 cursor-pointer">
                                     <img class="w-[32px] h-[32px] rounded-full" alt="" draggable="false" :src="message.from.profilePhoto" width="32">
-                                    <span>{{ message.from.username }}</span>
+                                    <span>{{ message.from.id }}</span>
                                 </div>
                                 <span class="select-text whitespace-normal w-full max-w-full">{{ message.content }}</span>
                                 <iframe v-if="message.content.includes('open.spotify.com/track/')" class="rounded-xl max-w-full" :src="`https://open.spotify.com/embed/track/${message.content.split('/')[4].split('?')[0]}?utm_source=anomz`" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>

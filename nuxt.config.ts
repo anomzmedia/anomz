@@ -40,12 +40,12 @@ export default defineNuxtConfig({
             ],
             script:[
                 {
-                    src:"https://www.google.com/recaptcha/api.js",
-                    defer:true,
-                    async:true
+                    src:"https://js.stripe.com/v3/"
                 },
                 {
-                    src:"https://js.stripe.com/v3/"
+                    src:"https://js.hcaptcha.com/1/api.js?hl=en",
+                    defer:true,
+                    async:true
                 }
             ]
         },

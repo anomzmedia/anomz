@@ -1,15 +1,12 @@
 import userModel from "../../models/user";
+import * as crypto from "node:crypto";
 
 export default defineEventHandler(async(event) => {
     try {
-        let body = await readBody(event);
+        let id = Math.floor(Math.random()*9999999999999999).toString();
+        let password = crypto.randomBytes(32).toString('hex');
 
-        let {username,password} = body;
-        if(!username || !password) return {success:false,message:"Body error!"};
-
-        //if(password.length < 6) return {success:false,message:"Minumum password length is 6!"};
-    
-        let user = await userModel.create({username,password});
+        let user = await userModel.create({id,password});
     
         return {success:true,user};
     } catch (error) {

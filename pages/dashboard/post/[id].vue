@@ -67,7 +67,7 @@
                 <modal @close-modal="modalActive = false" :class="`duration-300 ${modalActive ? 'opacity-100 visible' : 'opacity-0 invisible'}`" :user="post.author"/>
                 <div @click="modalActive = true" class="w-full bg-gray-800 py-2 px-4 gap-3 rounded-lg flex flex-row items-center cursor-pointer">
                     <img :src="post.author.profilePhoto" width="32" height="32" class="rounded-full" draggable="false" alt="">
-                    <span>{{ post.author.username }}</span>
+                    <span>{{ post.author.id }}</span>
                 </div>
                 <span class="w-full bg-gray-800 py-2 px-4 rounded-lg overflow-auto whitespace-pre-wrap h-1/2 select-text">
                     {{ post.content }}
@@ -79,9 +79,9 @@
                         <button type="submit"><i class="fa-solid fa-paper-plane cursor-pointer"></i></button>
                     </form>
                     <div class="w-full bg-gray-800 py-2 px-4 rounded-lg flex flex-col gap-2" v-for="comment in comments" :key="comment.id">
-                        <div @click="comment.author.modal = true" class="flex flex-row items-center gap-2">
+                        <div @click="comment.author.modal = true" class="flex flex-row items-center gap-2 cursor-pointer">
                             <img :src="comment.author.profilePhoto" class="rounded-full" width="32" height="32" alt="">
-                            <span>{{ comment.author.username }}</span>
+                            <span>{{ comment.author.id }}</span>
                         </div>
                         <modal :user="comment.author" :class="`duration-300 ${comment.author.modal ? 'opacity-100 visible' : 'opacity-0 invisible'}`" @close-modal="comment.author.modal = false"/>
                         {{ comment.content }}

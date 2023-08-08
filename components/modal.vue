@@ -22,11 +22,10 @@
                 <span>{{ user.username }}</span>
                 <span class="py-2 px-4 bg-red-600 hover:bg-red-800 duration-300 rounded cursor-pointer" @click="closeModala">X</span>
             </div>
-            <div class="w-full h-full flex flex-col items-center justify-center gap-2">
+            <div class="w-full h-full flex flex-col items-center justify-center gap-5">
                 <img :src="user.profilePhoto" width="64" class="rounded-full" draggable="false" alt="">
-                <span>{{ user.username }}</span>
-                <span class="text-xs text-gray-400">{{ user._id }}</span>
-                <nuxt-link v-if="my && my._id.toString() != user._id.toString()" :to="`/dashboard/${user.username}/messages`" class="bg-gradient-to-tr from-purple-600 to-blue-800 py-2 px-4 rounded-full">Send message</nuxt-link>
+                <span>{{ user.id }}</span>
+                <nuxt-link v-if="my && my._id.toString() != user._id.toString()" :to="`/dashboard/${user.id}/messages`" class="bg-gradient-to-tr from-purple-600 to-blue-800 py-2 px-4 rounded-full">Send message</nuxt-link>
             </div>
         </div>
     </div>
