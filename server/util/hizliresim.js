@@ -2,6 +2,7 @@ import axios from "axios";
 import fs from "node:fs";
 import path from "path";
 import FormData from "form-data";
+import cheerio, { Cheerio } from "cheerio";
 
 const getCSRF = () => {
     return new Promise((resolve,reject) => {
@@ -34,7 +35,9 @@ export const upload = async (file) => {
         }
     });
 
-    let code = res.data.match(/<input required="required" type="email" name="email" id="web-.*" class="input" value="https:\/\/www\.hizliresim\.com\/(.*)" onclick="this\.select\(\);">/)[1];
+    var $ = cheerio.load(res.data);
+    let code = new URL($(".upload-url a").attr().href).pathname;
+    //let code = res.data.match(/<input required="required" type="email" name="email" id="web-.*" class="input" value="https:\/\/www\.hizliresim\.com\/(.*)" onclick="this\.select\(\);">/)[1];
 
     return {code,imageUrl: `https://i.hizliresim.com/${code}${path.extname(file)}`}
 };

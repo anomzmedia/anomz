@@ -18,6 +18,7 @@
     "@nuxtjs/tailwindcss": "^6.7.0",
     "aos": "^2.3.4",
     "axios": "^1.4.0",
+    "cheerio": "^1.0.0-rc.12",
     "form-data": "^4.0.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.2.1",
