@@ -1,17 +1,75 @@
-#  Anomz
+# Nuxt 3 Minimal Starter
 
-###  Overview
+Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
-"Anomz" is an anonymous messaging platform. It never shares user information. It is an open source project.
+## Setup
 
-###  Why Anomz?
+Make sure to install the dependencies:
 
-Because:
-Anomz never shares your information.
-Easy usage.
-User friendly.
-Open Source.
+```bash
+# npm
+npm install
 
-###  Support
+# pnpm
+pnpm install
 
-[![donate](https://cdn.discordapp.com/attachments/1112352323201671346/1123824419555528824/image.png)](https://www.buymeacoffee.com/arasemr12)
+# yarn
+yarn install
+
+# bun
+bun install
+```
+
+## Development Server
+
+Start the development server on `http://localhost:3000`:
+
+```bash
+# npm
+npm run dev
+
+# pnpm
+pnpm run dev
+
+# yarn
+yarn dev
+
+# bun
+bun run dev
+```
+
+## Production
+
+Build the application for production:
+
+```bash
+# npm
+npm run build
+
+# pnpm
+pnpm run build
+
+# yarn
+yarn build
+
+# bun
+bun run build
+```
+
+Locally preview production build:
+
+```bash
+# npm
+npm run preview
+
+# pnpm
+pnpm run preview
+
+# yarn
+yarn preview
+
+# bun
+bun run preview
+```
+
+Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.

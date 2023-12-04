@@ -4,226 +4,72 @@
 
 @layer components{
     *{
-        @apply p-0 m-0 box-border border-0 outline-none select-none;
+        @apply p-0 m-0 box-border outline-none border-0 text-white scroll-smooth;
     }
 
     html,
     body,
     #__nuxt{
-        @apply w-full h-full bg-gray-900 text-white;
+        @apply w-full h-full bg-gray-900;
     }
 
-    main,
-    .main{
-        @apply lg:w-2/3 w-full;
+    .purple_rounded_btn{
+        @apply py-2 px-4 bg-purple-600 hover:bg-purple-800 duration-300 cursor-pointer rounded;
+    }
+
+    .green_rounded_btn{
+        @apply py-2 px-4 bg-green-600 hover:bg-green-800 duration-300 cursor-pointer rounded;
+    }
+
+    .blue_rounded_btn{
+        @apply py-2 px-4 bg-blue-600 hover:bg-blue-800 duration-300 cursor-pointer rounded;
     }
 
     input{
-        @apply bg-transparent rounded bg-gray-700 py-2 px-4 transition duration-300;
-    }
-
-    .whtbtn{
-        @apply py-2 px-4 border-[1px] rounded-full hover:bg-white transition duration-300 hover:text-black;
-    }
-
-    .hoverfocus *{
-        @apply hover:blur-0 lg:blur-[1px] duration-300;
-    }
-
-    .cursor{
-        @apply absolute block border-2 w-5 h-5 rounded-full;
-    }
-
-    .scbtn{
-        @apply bg-purple-600 hover:bg-purple-800 py-2 px-4 rounded duration-300;
-    }
-
-    @keyframes dcsa {
-        0%{
-            transform: translateY(0);
-        }
-
-        100%{
-            transform: translateY(-100%);
-        }
-    }
-
-    @keyframes dasa {
-        0%{
-            transform: translateY(-100%);
-        }
-
-        100%{
-            transform: translateY(0);
-        }
-    }
-
-    .dropdowncloseanim{
-        animation: dcsa 0.3s linear 0s 1;
-    }
-
-    .dropdownopenanim{
-        animation: dasa 0.3s linear 0s 1;
+        @apply py-2 px-4 rounded bg-gray-700;
     }
 
     .link{
         @apply text-blue-600 underline;
     }
 
-    .err{
-        @apply py-2 px-4 bg-red-100 text-red-600 rounded;
+    .dashnav_link{
+        @apply py-2 px-4 bg-gray-700 hover:bg-gray-600 duration-300 rounded w-full;
     }
 
     ::-webkit-scrollbar{
-        @apply w-2 h-2;
+        @apply w-[8px] bg-gray-800 rounded-full;
     }
 
-    ::-webkit-scrollbar-track{
-        @apply bg-gray-800 duration-300;
+    ::-webkit-scrollbar-thumb{
+        @apply bg-gray-700 hover:bg-gray-600 rounded-full;
     }
 
-    ::-webkit-scrollbar-thumb {
-        @apply bg-gray-600 duration-300 rounded-full;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-        @apply bg-gray-700 duration-300;
-    }
-
-    @keyframes animsclea {
+    @keyframes notiactive {
         0%{
-            transform: scale(0.7);
-            filter: blur(4px);
+            top: -100px;
         }
 
         100%{
-            transform: scale(1);
-            filter: blur(0);
+            top: 3px;
         }
     }
 
-    @keyframes animsclaa {
+    @keyframes notiinactive {
         0%{
-            transform: scale(1.5);
-            filter: blur(4px);
+            top: 3px;
         }
 
         100%{
-            transform: scale(1);
-            filter: blur(0);
+            top: -100px;
         }
     }
 
-    .animscle{
-        animation-name: animsclea;
-        animation-duration: 0.3s;
-        animation-iteration-count: 1;
+    .notiactive{
+        animation: notiactive 0.3s ease-in-out 1;
     }
 
-    .animscla{
-        animation: animsclaa 0.3s linear 0s 1;
-    }
-
-    @keyframes shake {
-        /*10%, 90% {
-            rotate: 0deg;
-        }
-        
-        20%, 80% {
-            rotate: 22.5deg;
-        }
-      
-        30%, 50%, 70% {
-            rotate: -45deg;
-        }
-      
-        40%, 60% {
-            rotate: 45deg;
-        }*/
-        0%, 100% {
-            rotate: 0;
-        }
-
-        10%, 90%{
-            rotate: 22.5deg;
-        }
-
-        20%, 80%{
-            rotate: -22.5deg;
-        }
-
-        30%, 50%, 70%{
-            rotate: 45deg;
-        }
-
-        40%, 60%{
-            rotate: -45deg;
-        }
-    }
-    
-    .shake:hover{
-        animation: shake 1s linear;
-    }
-
-    .photochanger i{
-        @apply opacity-0 duration-300 cursor-pointer;
-    }
-
-    .photochanger i:hover{
-        @apply opacity-100 visible;
-    }
-
-    .hr{
-        @apply h-[1px] w-full bg-gray-600 block rounded-full;
-    }
-
-    .hrt{
-        @apply h-full w-[1px] bg-gray-600 block rounded-full;
-    }
-
-    .grbtn{
-        @apply bg-gradient-to-tr from-purple-600 to-blue-600 py-2 px-4 rounded;
-    }
-
-    @keyframes notif {
-        0%{
-            transform: translateY(-30rem);
-        }
-
-        100%{
-            transform: translateY(0rem);
-        }
-    }
-
-    @keyframes bynotif {
-        0%{
-            transform: translateY(0rem);
-        }
-
-        100%{
-            transform: translateY(-30rem);
-        }
-    }
-
-    .notification{
-        animation: notif 1s linear 1 forwards;
-        @apply bg-black rounded-full py-2 px-4 top-0 bg-opacity-50 w-full lg:w-1/2 duration-300;
-    }
-
-    .bynotification{
-        animation: bynotif 1s linear 1 forwards;
-        @apply bg-black rounded-full py-2 px-4 top-0 bg-opacity-50 w-full lg:w-1/2 duration-300;
-    }
-
-    .msgcompts{
-        @apply opacity-0 invisible duration-300 flex flex-row gap-3 bg-gray-600 py-2 px-4 rounded-lg border-2 border-gray-500 shadow-xl;
-    }
-
-    .msgin:hover .msgcompts{
-        @apply opacity-100 visible;
-    }
-
-    .blue-btn{
-        @apply py-2 px-4 bg-blue-600 hover:bg-blue-800 focus:ring cursor-pointer transition duration-300 rounded;
+    .notiinactive{
+        animation: notiinactive 0.3s ease-in-out 1;
     }
 }

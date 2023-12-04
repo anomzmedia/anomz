@@ -1,18 +1,20 @@
 <script setup>
-
     const my = useState("user");
 
     const {user} = defineProps(['user']);
+
     const emit = defineEmits(['closeModal']);
     
     const closeModala = () => {
         emit("closeModal");
     };
 
-    window.addEventListener('keydown',(e) => {
-        if(e.key != "Escape") return;
-        closeModala();
-    });
+    if(process.client){
+        window.addEventListener('keydown',(e) => {
+            if(e.key != "Escape") return;
+            closeModala();
+        });
+    }
 </script>
 
 <template>
@@ -24,8 +26,8 @@
             </div>
             <div class="w-full h-full flex flex-col items-center justify-center gap-5">
                 <img :src="user.profilePhoto" width="64" class="rounded-full" draggable="false" alt="">
-                <span>{{ user.id }}</span>
-                <nuxt-link v-if="my && my._id.toString() != user._id.toString()" :to="`/dashboard/${user.id}/messages`" class="bg-gradient-to-tr from-purple-600 to-blue-800 py-2 px-4 rounded-full">Send message</nuxt-link>
+                <span>{{ user.username }}</span>
+                <nuxt-link v-if="my && my.id != user.id" :to="`/dashboard/${user.username}/messages`" class="bg-gradient-to-tr from-purple-600 to-blue-800 py-2 px-4 rounded-full">Send message</nuxt-link>
             </div>
         </div>
     </div>

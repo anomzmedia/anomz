@@ -1,34 +1,18 @@
-const {public:{socketLink}} = useRuntimeConfig();
+const initIO = () => {
+    const {public:{apiUrl}} = useRuntimeConfig();
+    
+    const sock = useState("sock");
+    const token = useCookie("token");
 
-export const InitWS = () => {
-    const socket = useState("socket");
+    sock.value = io(apiUrl);
 
-    if(socket.value) {
-        socket.value.close();
-        socket.value = null;
-    };
-
-    socket.value = new WebSocket(socketLink);
-
-    socket.value.addEventListener('open',() => {
-        console.log("connected");
-        socket.value.send(JSON.stringify({
-            action:"login",
-            token:useCookie("token").value
-        }));
-    });
-
-    socket.value.addEventListener('message',(data) => {
-        console.log(data);
-    });
+    sock.value.emit("login",token.value);
 };
 
-export const DeleteWS = () => {
-    const socket = useState("socket");
-
-    if(!socket.value) return;
-
-    socket.value.close();
-
-    socket.value = null;
+const closeIO = () => {
+    const sock = useState("sock");
+    
+    sock.value.close();
 };
+
+export {initIO,closeIO};

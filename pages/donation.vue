@@ -1,6 +1,6 @@
 <script setup>
 
-    import useAPI from '~/composables/axios';
+    /*import useAPI from '~/composables/axios';
 
     const axios = useAPI();
 
@@ -26,7 +26,7 @@
     const card = elements.create('card',{style});
 
     onMounted(() => {
-        card.mount("#mainform");
+        //card.mount("#mainform");
     });
 
     const submit = async() => {
@@ -51,11 +51,11 @@
         }
 
         error.value = data.message;
-    };
+    };*/
 </script>
 
 <template>
-    <div class="w-2/3 h-full flex flex-col items-center pt-32" v-if="success">
+    <!--<div class="w-2/3 h-full flex flex-col items-center pt-32" v-if="success">
         <div class="w-full flex flex-row gap-1 items-center text-2xl mb-4">
             <span class="font-bold">{{ String(charge.amount).slice(0,-2) }}</span>
             <span>{{charge.currency.toUpperCase()}}</span>
@@ -102,12 +102,10 @@
             <Loading v-if="request"/>
             <button v-else class="bg-blue-600 py-2 px-4 rounded">submit</button>
         </form>
-        <span>Or you can use this:</span>
-        <a class="bg-pink-200 py-2 px-4 rounded-full mb-4 flex flex-col text-black items-center justify-center" href="https://www.buymeacoffee.com/arasemr12" target="_blank">
+        <span>Or you can use this:</span>-->
+    <div class="w-full h-full flex items-center justify-center">
+        <a class="bg-blue-400 py-2 px-4 rounded-full mb-4 flex items-center justify-center" href="https://www.buymeacoffee.com/arasemr12" target="_blank">
             <img src="/bf.webp" draggable="false" width="512" alt="">
         </a>
-        <div class="py-2 px-4 bg-red-100 text-red-600 rounded-full" v-if="error">
-            <span>{{error}}</span>
-        </div>
     </div>
 </template>
