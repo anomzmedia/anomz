@@ -65,10 +65,16 @@
                     <span class="text-2xl font-bold text-transparent bg-gradient-to-tr from-purple-600 to-blue-600 bg-clip-text">10</span>
                 </button>
             </div>
-            <form @submit.prevent="submitPost" class="w-full flex flex-row items-center bg-gray-800 rounded-lg py-2 px-4">
-                <textarea v-model="postContent" class="w-full bg-gray-800 focus:ring-0" placeholder="The weather is very nice today!" name="" id="" cols="30" rows="2"></textarea>
-                <button type="submit"><i class="fa-solid fa-paper-plane cursor-pointer"></i></button>
-            </form>
+            <div class="w-full flex flex-col gap-3">
+                <form @submit.prevent="submitPost" class="w-full flex flex-row items-center bg-gray-800 rounded-lg py-2 px-4">
+                    <textarea v-model="postContent" class="w-full bg-gray-800 focus:ring-0" placeholder="The weather is very nice today!" name="" id="" cols="30" maxlength="1024" :rows="postContent.split('\n').length"></textarea>
+                    <button type="submit"><i class="fa-solid fa-paper-plane cursor-pointer"></i></button>
+                </form>
+                <span>{{ postContent.length }}/1024</span>
+                <span class="w-full h-[1px] bg-gray-800 block">
+                    <span :style="`width: ${(postContent.length/1024)*100}%;`" :class="`duration-300 h-[1px] bg-gray-600 block`"></span>
+                </span>
+            </div>
             <span class="text-xl uppercase">latest posts</span>
             <div v-if="posts.length < 1" class="w-full flex items-center justify-center">
                 <loading/>
