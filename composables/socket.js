@@ -4,7 +4,9 @@ const initIO = () => {
     const sock = useState("sock");
     const token = useCookie("token");
 
-    sock.value = io(apiUrl);
+    sock.value = io(apiUrl,{
+        transports:["websocket"]
+    });
 
     sock.value.emit("login",token.value);
 };
