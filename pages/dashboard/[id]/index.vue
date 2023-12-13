@@ -15,12 +15,18 @@ const username = route.params.id;
 const myUser = useState("user");
 const user = ref(null);
 
+const token = useCookie("token");
+
 (async() => {
     if(!username) return router.push("/dashboard/friends");
 
     if(myUser.value.username == username) return router.push("/dashboard/friends");
 
-    let {data} = await useFetch(`${apiUrl}/api/user/${username}`);
+    let {data} = await useFetch(`${apiUrl}/api/user/${username}`,{
+        headers:{
+            Authorization:token.value
+        }
+    });
 
     if(!data.value || !data.value.success) return router.push("/dashboard/friends");
 
