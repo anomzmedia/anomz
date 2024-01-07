@@ -25,6 +25,10 @@
         @apply py-2 px-4 bg-blue-600 hover:bg-blue-800 duration-300 cursor-pointer rounded;
     }
 
+    .red_rounded_btn{
+        @apply py-2 px-4 bg-red-600 hover:bg-red-800 duration-300 cursor-pointer rounded;
+    }
+
     input{
         @apply py-2 px-4 rounded bg-gray-700;
     }
@@ -71,5 +75,18 @@
 
     .notiinactive{
         animation: notiinactive 0.3s ease-in-out 1;
+    }
+
+    .roundbtn{
+        @apply py-2 px-4 bg-gray-800 hover:bg-gray-700 duration-300 hover:shadow-md rounded-full;
+    }
+
+    .whtroundbtn{
+        @apply py-2 px-4 bg-white text-black rounded-full;
+    }
+
+    .hr{
+        @apply block w-[1px] h-[1px] bg-gray-700;
+        content: "";
     }
 }

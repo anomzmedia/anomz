@@ -51,17 +51,17 @@ const loadedMaxMessages = ref(false);
     if(!data.value.success) return router.push("/dashboard/friends");
 
     messages.value = data.value.messages.slice().reverse();
-})();
 
-/*watch(messages,(newMessages,old) => {
+    if(!process.client) return;
+
     nextTick(() => {
         main.value.scrollTo({
             top: main.value.scrollHeight,
             left: 0,
-            behavior: "smooth",
+            behavior:"instant"
         });
     });
-});*/
+})();
 
 const submit = async() => {
     let res = await axios.post(`${apiUrl}/api/user/${route.params.id}/messages/create`,{
@@ -95,6 +95,7 @@ onMounted(() => {
             main.value.scrollTo({
                 top: main.value.scrollHeight,
                 left: 0,
+                behavior:"instant"
             });
 
             sock.value.removeAllListeners("message");
@@ -113,21 +114,6 @@ onMounted(() => {
         });
     });
 });
-
-/*
-    let initialHeight = msgs.value.scrollHeight;
-
-    console.log(msgs.value.scrollTop)
-
-    if(msgs.value.scrollTop > 50 || loadingNewMessages.value) return;
-    loadingNewMessages.value = true;
-    page.value++;
-    await loadNewMessages();
-    nextTick(() => {
-        msgs.value.scrollTop = msgs.value.scrollHeight-initialHeight;
-    });
-    loadingNewMessages.value = false;
-*/
 
 const scroll = async() => {
     if(main.value.scrollTop > 30 || loadingNewMessages.value || loadedMaxMessages.value) return;
@@ -163,6 +149,10 @@ const scroll = async() => {
     <div class="w-full h-full flex flex-row items-center lg:justify-normal justify-center">
         <dashnav/>
         <div class="flex flex-col w-full lg:w-5/6 h-full p-4">
+            <div v-if="user" class="flex flex-row items-center gap-3 bg-gray-800 p-2 rounded-full">
+                <img class="rounded-full w-[32px] h-[32px]" draggable="false" width="32" height="32" :src="user.profilePhoto" alt="">
+                <span>{{ user.username }}</span>
+            </div>
             <div @scroll="scroll" ref="main" class="h-full overflow-y-auto">
                 <div v-for="msg in messages" :key="msg.id" class="flex flex-col w-full hover:bg-gray-700 py-2 px-4">
                     <div class="flex flex-row w-full justify-between items-center relative">

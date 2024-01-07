@@ -10,7 +10,6 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@nuxt/devtools": "latest",
     "@nuxtjs/tailwindcss": "^6.9.4",
     "axios": "^1.6.0",
     "nuxt": "^3.8.0",

@@ -799,7 +799,7 @@
     rc9 "^2.1.1"
     semver "^7.5.4"
 
-"@nuxt/devtools@^1.0.0", "@nuxt/devtools@latest":
+"@nuxt/devtools@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@nuxt/devtools/-/devtools-1.0.0.tgz#7d30a64bb9f69931a34103aaad8c45433fafd2dd"
   integrity sha512-pM5AvystXlFPYOsGbH8PBxEYkttiEWHsZnGw660iMw8QedB6mAweT21XX9LDS69cqnRY5uTFqVOmO9Y4EYL3hg==
