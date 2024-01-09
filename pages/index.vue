@@ -14,21 +14,21 @@
             </a>
         </div>
         <div class="w-full h-full flex items-center justify-center" id="two">
-            <div class="w-full lg:w-3/4 h-full flex flex-row items-center justify-center gap-3">
-                <div class="flex flex-col items-center gap-1 bg-gray-800 p-4 rounded">
+            <div class="w-full lg:w-3/4 h-full flex flex-col lg:flex-row items-center justify-center gap-3 p-4 lg:p-0">
+                <a href="https://github.com/anomzmedia/anomz" target="_blank" class="flex flex-col items-center gap-1 bg-gray-800 p-4 rounded w-full lg:w-1/3">
                     <i class="fa-solid fa-lock fa-2x"></i>
                     <span class="text-xl font-bold">Open Source</span>
-                    <span>Open source and flexible hosting to enable data sovereignty.</span>
-                </div>
-                <div class="flex flex-col items-center gap-1 bg-gray-800 p-4 rounded">
+                    <!--<span>Open source and flexible hosting to enable data sovereignty.</span>-->
+                </a>
+                <div class="flex flex-col items-center gap-1 bg-gray-800 p-4 rounded w-full lg:w-1/3">
                     <i class="fa-solid fa-shield-halved fa-2x"></i>
                     <span class="text-xl font-bold">Security</span>
-                    <span>Open source and flexible hosting to enable data sovereignty.</span>
+                    <!--<span>Open source and flexible hosting to enable data sovereignty.</span>-->
                 </div>
-                <div class="flex flex-col items-center gap-1 bg-gray-800 p-4 rounded">
+                <div class="flex flex-col items-center gap-1 bg-gray-800 p-4 rounded w-full lg:w-1/3">
                     <i class="fa-solid fa-user-ninja fa-2x"></i>
                     <span class="text-xl font-bold">Anonymous</span>
-                    <span>Open source and flexible hosting to enable data sovereignty.</span>
+                    <!--<span>Open source and flexible hosting to enable data sovereignty.</span>-->
                 </div>
             </div>
         </div>
