@@ -71,6 +71,7 @@ const resetPassword = async() => {
                 <nuxt-link class="dashnav_link" to="/dashboard/">Dashboard</nuxt-link>
                 <nuxt-link class="dashnav_link" to="/dashboard/friends">Friends</nuxt-link>
                 <nuxt-link class="dashnav_link" to="/dashboard/profile">Profile</nuxt-link>
+                <nuxt-link class="dashnav_link" to="/dashboard/groups">Groups</nuxt-link>
             </div>
             <div @click="avatar = !avatar" class="flex flex-row items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 duration-300 border-[1px] border-gray-500 cursor-pointer w-full py-2 px-4 rounded-full" v-if="user">
                 <img :src="user.profilePhoto" width="32" height="32" class="rounded-full w-[32px] h-[32px]" alt="">
