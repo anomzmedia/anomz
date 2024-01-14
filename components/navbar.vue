@@ -21,7 +21,7 @@ const logout = () => {
     <nav v-if="!router.currentRoute.value.fullPath.toLowerCase().includes('dashboard')" class="w-full z-50 hidden lg:flex flex-row items-center justify-between absolute py-2 px-4">
         <div>
             <nuxt-link to="/" class="flex flex-row items-center gap-2">
-                <img src="/anomz.png" width="32" height="32">
+                <img src="/anomz2.png" width="32" height="32">
                 <span class="font-semibold">Anomz</span>
             </nuxt-link>
         </div>

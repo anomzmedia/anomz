@@ -57,7 +57,7 @@
     <div class="w-full h-full flex flex-row items-center">
         <dashnav/>
         <div @scroll="scroll" ref="main" class="flex flex-col w-full lg:w-5/6 h-full items-center gap-5 p-4 overflow-auto">
-            <img width="128" draggable="false" class="duration-300 rounded-full" height="128" src="/anomz.png" alt="">
+            <img width="128" draggable="false" class="duration-300 rounded-full" height="128" src="/anomz2.png" alt="">
             <div class="flex flex-col lg:flex-row items-center gap-5 w-full">
                 <button v-for="num in [1,2,3]" :key="num" class="w-full lg:w-1/3 flex flex-col items-center focus:ring bg-gray-800 hover:bg-gray-700 cursor-pointer transition-all duration-300 py-2 px-4 rounded-lg gap-1">
                     <i class="fa-solid fa-user-group fa-2x"></i>

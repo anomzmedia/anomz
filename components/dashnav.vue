@@ -64,7 +64,7 @@ const resetPassword = async() => {
     </div>
     <div class="h-full w-full lg:w-1/6 py-2 px-4 bg-gray-800 gap-3 hidden lg:flex flex-col items-center">
         <nuxt-link to="/">
-            <img src="/favicon.svg" width="64" alt="">
+            <img src="/anomz2.png" width="64" alt="">
         </nuxt-link>
         <div class="flex flex-col justify-between items-center h-full w-full">
             <div class="w-full flex flex-col items-center overflow-auto gap-3">

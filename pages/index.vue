@@ -1,7 +1,7 @@
 <template>
     <div class="w-full h-full overflow-auto">
         <div class="w-full h-full flex flex-col items-center justify-center gap-y-3 text-center">
-            <img src="/anomz.png" width="96" draggable="false" alt="">
+            <img src="/anomz2.png" width="96" draggable="false" alt="">
             <span class="font-bold uppercase text-4xl">Anomz</span>
             <span>Herkesin anonim olarak sohbet edebildiği özgürlükçü platform</span>
             <a href="https://www.producthunt.com/posts/anomz?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-anomz" target="_blank">
