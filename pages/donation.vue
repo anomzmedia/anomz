@@ -103,9 +103,11 @@
             <button v-else class="bg-blue-600 py-2 px-4 rounded">submit</button>
         </form>
         <span>Or you can use this:</span>-->
-    <div class="w-full h-full flex items-center justify-center">
+    <div class="w-full h-full flex flex-col gap-5 items-center justify-center">
         <a class="bg-blue-400 py-2 px-4 rounded-full mb-4 flex items-center justify-center" href="https://www.buymeacoffee.com/arasemr12" target="_blank">
             <img src="/bf.webp" draggable="false" width="512" alt="">
         </a>
+        <span class="text-xs">or</span>
+        <span class="text-purple-600 font-bold">BTC: 18jZo8m4r6mSyozJb2MfQrH9TG24kPQY4i</span>
     </div>
 </template>

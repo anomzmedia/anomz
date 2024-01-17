@@ -30,9 +30,7 @@ const loadingNewMessages = ref(false);
 const loadedMaxMessages = ref(false);
 
 (async() => {
-    if(!route.params.id) return router.push("/dashboard/friends");
-
-    if(myUser.value.username == route.params.id) return router.push("/dashboard/friends");
+    if(!route.params.id || myUser.value.username == route.params.id) return router.push("/dashboard/friends");
 
     let {data} = await useFetch(`${apiUrl}/api/user/${route.params.id}`);
 
@@ -64,6 +62,8 @@ const loadedMaxMessages = ref(false);
 })();
 
 const submit = async() => {
+    if(!message.value) return;
+    
     let res = await axios.post(`${apiUrl}/api/user/${route.params.id}/messages/create`,{
         content:message.value
     },{
@@ -75,7 +75,6 @@ const submit = async() => {
     let data = res.data;
 
     messages.value = [...messages.value,data.result];
-
     message.value = "";
 
     nextTick(() => {
@@ -84,7 +83,6 @@ const submit = async() => {
             left: 0,
         });
     });
-
 };
 
 const copyClipBoard = (text) => navigator.clipboard.writeText(text);
@@ -92,6 +90,9 @@ const copyClipBoard = (text) => navigator.clipboard.writeText(text);
 onMounted(() => {
     nextTick(() => {
         nextTick(() => {
+            console.log("test");
+            console.log(sock.value);
+
             main.value.scrollTo({
                 top: main.value.scrollHeight,
                 left: 0,
@@ -101,6 +102,7 @@ onMounted(() => {
             sock.value.removeAllListeners("message");
 
             sock.value.on('message',(t) => {
+                console.log(t);
                 if(t.channel == user.value.id){
                     messages.value.push(t.message);
                     nextTick(() => {
@@ -118,9 +120,9 @@ onMounted(() => {
 const scroll = async() => {
     if(main.value.scrollTop > 30 || loadingNewMessages.value || loadedMaxMessages.value) return;
 
-    let initialHeight = main.value.scrollHeight;
-
     loadingNewMessages.value = true;
+
+    let initialHeight = main.value.scrollHeight;
     
     page.value++;
 
@@ -135,12 +137,24 @@ const scroll = async() => {
     messages.value = [...data.value.messages.slice().reverse(),...messages.value];
 
     nextTick(() => {
-        main.value.scrollTop = main.value.scrollHeight-initialHeight;
+        main.value.scrollTo({
+            top: main.value.scrollHeight-initialHeight,
+            left: 0,
+            behavior:"instant"
+        });
+
+        loadingNewMessages.value = false;
     });
 
     if(data.value.messages.length < 1) loadedMaxMessages.value = true;
+};
 
-    loadingNewMessages.value = false;
+const openPopup = (id) => {
+
+};
+
+const deleteMessage = (id) => {
+
 };
 
 </script>
@@ -154,6 +168,9 @@ const scroll = async() => {
                 <span>{{ user.username }}</span>
             </div>
             <div @scroll="scroll" ref="main" class="h-full overflow-y-auto">
+                <div class="w-full flex items-center justify-center" v-if="loadingNewMessages">
+                    <loading/>
+                </div>
                 <div v-for="msg in messages" :key="msg.id" class="flex flex-col w-full hover:bg-gray-700 py-2 px-4">
                     <div class="flex flex-row w-full justify-between items-center relative">
                         <div class="flex flex-col items-start gap-2 w-full">
@@ -164,7 +181,7 @@ const scroll = async() => {
                             <span class="select-text whitespace-normal w-full max-w-full">{{ msg.content }}</span>
                         </div>
                         <div class="absolute right-0 flex flex-row items-center gap-2">
-                            <i :id="`msg_delete_btn_${msg.id}`" v-if="msg.from.id == myUser.id" @click="deleteMessage(msg.id)" class="fa-solid fa-trash hover:text-red-600 cursor-pointer duration-300 shake flex"></i>
+                            <i :id="`msg_delete_btn_${msg?.id}`" v-if="msg?.from?.id == myUser.id" @click="deleteMessage(msg?.id)" class="fa-solid fa-trash hover:text-red-600 cursor-pointer duration-300 shake flex"></i>
                             <i @click="copyClipBoard(msg.content)" class="fa-solid fa-copy hover:text-blue-600 cursor-pointer duration-300"></i>
                         </div>
                     </div>

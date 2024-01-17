@@ -12,9 +12,18 @@ const avatar = ref(false);
 const router = useRouter();
 
 const logout = () => {
-    router.push("/login");
     user.value = null;
     token.value = null;
+
+    try {
+        closeIO();
+    } catch (err) {
+        
+    }
+
+    nextTick(() => {
+        router.push("/login");
+    });
 };
 
 const resetPassword = async() => {

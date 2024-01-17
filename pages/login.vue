@@ -39,9 +39,11 @@
 
             token.value = res.data.token;
             user.value = res.data.user;
-            router.push("/dashboard");
-
-            initIO();
+            
+            nextTick(() => {
+                initIO();
+                router.push("/dashboard");
+            });
         }).catch((e) => {
             loading.value = false;
             err.value = e.response.data.message;
