@@ -171,6 +171,9 @@ const deleteMessage = (id) => {
                 <div class="w-full flex items-center justify-center" v-if="loadingNewMessages">
                     <loading/>
                 </div>
+                <div class="w-full flex items-center justify-center p-4" v-if="loadedMaxMessages || messages.length < 1">
+                    <span class="select-none text-gray-500 text-sm font-semibold">{{ route.params.id }} ile olan sohbetin başlangıcı..</span>
+                </div>
                 <div v-for="msg in messages" :key="msg.id" class="flex flex-col w-full hover:bg-gray-700 py-2 px-4">
                     <div class="flex flex-row w-full justify-between items-center relative">
                         <div class="flex flex-col items-start gap-2 w-full">
