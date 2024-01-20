@@ -25,12 +25,21 @@
         try {
             let {data} = await useFetch(`${apiUrl}/api/post/${route.params.id}`);
 
-            if(!data.value.success) return err.value = data.message;
+            if(!data.value.success) return err.value = data.value.message;
 
             post.value = data.value.find;
-            comments.value = data.value.find.comments;
         } catch (error) {
-            err.value = error.message;
+        }
+    })();
+
+    (async() => {
+        try {
+            let {data} = await useFetch(`${apiUrl}/api/post/${route.params.id}/comments`);
+
+            if(!data.value.success) return;
+
+            comments.value = data.value.find;
+        } catch (error) {
         }
     })();
 
@@ -53,14 +62,17 @@
         newComment.value = "";
     };
 
+    const usrrnm = ref("");
+
 </script>
 
 <template>
     <div class="w-full h-full flex flex-row items-center lg:justify-normal justify-center">
         <dashnav/>
         <div v-if="post" class="flex flex-col w-full lg:w-5/6 h-full items-center gap-5 p-4">
-            <modal @close-modal="modalActive = false" :class="`duration-300 ${modalActive ? 'opacity-100 visible' : 'opacity-0 invisible'}`" :user="post.author"/>
-            <div @click="modalActive = true" class="w-full bg-gray-800 py-2 px-4 gap-3 rounded-lg flex flex-row items-center cursor-pointer">
+            <!--<modal @close-modal="modalActive = false" :class="`duration-300 ${modalActive ? 'opacity-100 visible' : 'opacity-0 invisible'}`" :user="post.author"/>-->
+            <UserModal @close-modal="modalActive = false" :username="usrrnm" :class="`duration-300 ${modalActive ? 'opacity-100 visible' : 'opacity-0 invisible'}`"/>
+            <div @click="modalActive = true; usrrnm = post.author.username" class="w-full bg-gray-800 py-2 px-4 gap-3 rounded-lg flex flex-row items-center cursor-pointer">
                 <img :src="post.author.profilePhoto" width="32" height="32" class="rounded-full" draggable="false" alt="">
                 <span>{{ post.author.username }}</span>
             </div>
@@ -74,13 +86,17 @@
                     <button type="submit"><i class="fa-solid fa-paper-plane cursor-pointer"></i></button>
                 </form>
                 <div class="w-full bg-gray-800 py-2 px-4 rounded-lg flex flex-col gap-2" v-for="comment in comments" :key="comment.id">
-                    <div @click="comment.author.modal = true" class="flex flex-row items-center gap-2 cursor-pointer">
+                    <div @click="modalActive = true; usrrnm = comment.author.username" class="flex flex-row items-center gap-2 cursor-pointer">
                         <img :src="comment.author.profilePhoto" class="rounded-full" width="32" height="32" alt="">
                         <span>{{ comment.author.username }}</span>
                     </div>
-                    <modal :user="comment.author" :class="`duration-300 ${comment.author.modal ? 'opacity-100 visible' : 'opacity-0 invisible'}`" @close-modal="comment.author.modal = false"/>
-                    {{ comment.content }}
+                    <span>{{ comment.content }}</span>
                 </div>
+            </div>
+        </div>
+        <div v-else-if="err" class="w-full h-full lg:w-5/6 flex items-center justify-center p-6">
+            <div class="w-full bg-red-200 text-red-600 rounded-full py-2 px-4">
+                {{ err }}
             </div>
         </div>
         <div v-else class="flex w-full lg:w-5/6 h-full items-center justify-center">

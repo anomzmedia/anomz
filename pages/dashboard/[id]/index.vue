@@ -10,7 +10,7 @@ const {public:{apiUrl}} = useRuntimeConfig();
 const router = useRouter();
 const route = useRoute();
 
-const username = route.params.id;
+const username = ref(route?.params?.id);
 
 const myUser = useState("user");
 const user = ref(null);
@@ -18,11 +18,9 @@ const user = ref(null);
 const token = useCookie("token");
 
 (async() => {
-    if(!username) return router.push("/dashboard/friends");
+    if(!username.value || myUser.value.username == username.value) return router.push("/dashboard/friends");
 
-    if(myUser.value.username == username) return router.push("/dashboard/friends");
-
-    let {data} = await useFetch(`${apiUrl}/api/user/${username}`,{
+    let {data} = await useFetch(`${apiUrl}/api/user/${username.value}`,{
         headers:{
             Authorization:token.value
         }

@@ -16,6 +16,8 @@
 
     const token = useCookie("token");
 
+    const router = useRouter();
+
     const {public:{apiUrl}} = useRuntimeConfig();
 
     (async() => {
@@ -35,7 +37,13 @@
         });
 
         let data = res.data;
+
         posts.value.unshift(data.post);
+
+        postContent.value = "";
+
+
+        router.push(`/dashboard/post/${data.post.id}`);
     };
 
     const loadNewPosts = async() => {
@@ -51,10 +59,14 @@
         await loadNewPosts();
         loadingNewPosts.value = false;
     };
+
+    const modalActive = ref(false);
+    const usrnm = ref("");
 </script>
 
 <template>
     <div class="w-full h-full flex flex-row items-center">
+        <UserModal @close-modal="modalActive = false;" :class="`${modalActive ? 'opacity-100 visible' : 'opacity-0 invisible'} duration-300`" :username="usrnm" />
         <dashnav/>
         <div @scroll="scroll" ref="main" class="flex flex-col w-full lg:w-5/6 h-full items-center gap-5 p-4 overflow-auto">
             <img width="128" draggable="false" class="duration-300 rounded-full" height="128" src="/anomz2.png" alt="">
@@ -80,9 +92,8 @@
                 <loading/>
             </div>
             <div v-else v-for="post in posts" :key="post.id" class="py-2 px-4 w-full bg-gray-800 rounded-lg flex flex-col gap-3">
-                <modal @close-modal="post.author.modalActive = false;" :class="`${post.author.modalActive ? 'opacity-100 visible' : 'opacity-0 invisible'} duration-300`" :user="post.author" />
-                <div @click="post.author.modalActive = true" class="w-auto flex flex-row gap-2 items-center cursor-pointer">
-                    <div class="relative">
+                <div @click="modalActive = true; usrnm = post.author.username" class="w-auto flex flex-row gap-2 items-center cursor-pointer">
+                    <div class="relative z-10">
                         <img draggable="false" :src="post.author.profilePhoto" class="rounded-full" width="32" alt="">
                         <span class="border-2 border-green-600 text-green-600 bg-green-600 w-3 h-3 block rounded-full absolute right-[-2px] bottom-[-2px]"></span>
                     </div>

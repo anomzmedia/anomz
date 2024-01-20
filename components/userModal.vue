@@ -2,23 +2,35 @@
 
 const {public:{apiUrl}} = useRuntimeConfig();
 
-const {username} = defineProps(['username']);
+const t = defineProps({
+    username:{default:"",type:[String]}
+});
 const emit = defineEmits(['closeModal']);
 
 const user = ref(null);
 
-(async() => {
-    let {data} = await useFetch(`${apiUrl}/api/user/${username}`);
+watch(() => t.username,() => {
+    user.value = null;
+
+    get();
+});
+
+const get = async() => {
+    let {data} = await useFetch(`${apiUrl}/api/user/${t.username}`);
+
+    if(!data.value || !data.value.find) return;
 
     user.value = data.value.find;
-})();
+};
+
+get();
 </script>
 
 <template>
-    <div class="w-full h-full bg-black/30 fixed top-0 left-0 flex items-center justify-center">
+    <div class="w-full h-full bg-black/30 fixed top-0 left-0 flex items-center justify-center z-50">
         <div class="lg:w-2/3 lg:h-2/3 h-full w-full bg-gray-800 rounded-lg flex flex-col">
             <div class="w-full p-4 flex flex-row items-center justify-between">
-                <span>{{ username }}</span>
+                <span>{{ t.username }}</span>
                 <button @click="emit('closeModal')">X</button>
             </div>
             <div v-if="user" class="overflow-auto w-full h-full flex flex-col p-4 items-center gap-3">
