@@ -118,6 +118,7 @@ onMounted(() => {
 });
 
 const scroll = async() => {
+    console.log(messages.value[0].id);
     if(main.value.scrollTop > 30 || loadingNewMessages.value || loadedMaxMessages.value) return;
 
     loadingNewMessages.value = true;
@@ -126,10 +127,10 @@ const scroll = async() => {
     
     page.value++;
 
-    let {data} = await useFetch(`${apiUrl}/api/user/${route.params.id}/messages?page=${page.value}`,{
+    let {data} = await useFetch(`${apiUrl}/api/user/${route.params.id}/messages?page=${page.value}&cursor=${messages.value[0].id}`,{
         headers:{
             Authorization:token.value
-        }
+        },
     });
 
     if(!data.value.success) return router.push("/dashboard/friends");

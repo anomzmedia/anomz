@@ -47,7 +47,7 @@
     };
 
     const loadNewPosts = async() => {
-        let {data} = await useFetch(`${apiUrl}/api/post/all?page=${page.value}`);
+        let {data} = await useFetch(`${apiUrl}/api/post/all?page=${page.value}&cursor=${posts.value[posts.value.length-1].id}`);
         if(data.value.posts.length < 1) loadedMaxPosts.value = true;
         posts.value = [...posts.value,...data.value.posts];
     };

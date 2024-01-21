@@ -89,4 +89,37 @@
         @apply block w-[1px] h-[1px] bg-gray-700;
         content: "";
     }
+
+    @keyframes animgroup1 {
+        0%{
+            transform: translateX(0);
+            opacity: 100%;
+        }
+
+        100%{
+            transform: translateX(-100rem);
+            opacity: 0;
+        }
+    }
+
+    @keyframes animgroup2 {
+        0%{
+            transform: translateX(100rem);
+            opacity: 0;
+        }
+
+        100%{
+            transform: translateX(0);
+            opacity: 100%;
+        }
+    }
+
+    .animgroup1{
+        animation: animgroup1 1s linear 0s 1 normal forwards;
+        @apply absolute;
+    }
+
+    .animgroup2{
+        animation: animgroup2 1s linear 0s 1 normal forwards;
+    }
 }
