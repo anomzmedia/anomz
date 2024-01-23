@@ -103,7 +103,7 @@ onMounted(() => {
 
             sock.value.on('message',(t) => {
                 console.log(t);
-                if(t.channel == user.value.id){
+                if(t.channel && t.channel == user.value.id){
                     messages.value.push(t.message);
                     nextTick(() => {
                         main.value.scrollTo({

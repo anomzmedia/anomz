@@ -44,9 +44,7 @@ const registerServiceWorker = async () => {
 onMounted(() => {
     registerServiceWorker();
 
-    if(!user.value) return;
-    
-    initIO();
+    if(user.value) initIO();    
 });
 
 </script>

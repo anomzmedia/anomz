@@ -11,6 +11,8 @@
 
     const user = useState("user");
 
+    const router = useRouter();
+
     const page = ref(true);
 
     const changePage = () => page.value = !page.value;
@@ -58,7 +60,7 @@
         });
 
         let json = await res.json();
-        console.log(json);
+        router.push(`/dashboard/groups/${json.group.id}`);
     };
 </script>
 
