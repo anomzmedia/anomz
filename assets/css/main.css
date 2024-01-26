@@ -122,4 +122,16 @@
     .animgroup2{
         animation: animgroup2 1s linear 0s 1 normal forwards;
     }
+
+    .tooltipbtn{
+        @apply relative;
+    }
+
+    .tooltip{
+        @apply absolute -translate-y-12 left-1/2 -translate-x-1/2 invisible opacity-0 duration-300 bg-black/20 p-1 rounded-full;
+    }
+
+    .tooltipbtn:hover .tooltip{
+        @apply visible opacity-100;
+    }
 }

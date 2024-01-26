@@ -167,6 +167,7 @@ const deleteMessage = (id) => {
             <div v-if="user" class="flex flex-row items-center gap-3 bg-gray-800 p-2 rounded-full">
                 <img class="rounded-full w-[32px] h-[32px]" draggable="false" width="32" height="32" :src="user.profilePhoto" alt="">
                 <span>{{ user.username }}</span>
+                <nuxt-link :to="`/dashboard/${user.username}/voice`">make call</nuxt-link>
             </div>
             <div @scroll="scroll" ref="main" class="h-full overflow-y-auto">
                 <div class="w-full flex items-center justify-center" v-if="loadingNewMessages">

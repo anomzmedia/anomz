@@ -1,13 +1,10 @@
 <script setup>
 const user = useState("user");
-const sock = useState("sock");
 const token = useCookie("token");
 
 const {public:{apiUrl}} = useRuntimeConfig();
 
 const route = useRoute();
-
-//import {initIO} from "../composables/socket";
 
 (async() => {
     if(!token.value) return;
@@ -44,7 +41,7 @@ const registerServiceWorker = async () => {
 onMounted(() => {
     registerServiceWorker();
 
-    if(user.value) initIO();    
+    if(user.value) initIO();
 });
 
 </script>
