@@ -20,6 +20,10 @@ export default defineNuxtConfig({
           integrity:"sha512-zoJXRvW2gC8Z0Xo3lBbao5+AS3g6YWr5ztKqaicua11xHo+AvE1b0lT9ODgrHTmNUxeCw0Ry4BGRYZfXu70weg==",
           crossorigin:"anonymous",
           referrerpolicy:"no-referrer"
+        },
+        {
+          src:"https://www.googletagmanager.com/gtag/js?id=G-Y7SZD3FFP8",
+          async:true
         }
       ],
       link:[

@@ -42,6 +42,12 @@ onMounted(() => {
     registerServiceWorker();
 
     if(user.value) initIO();
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-Y7SZD3FFP8');
 });
 
 </script>
