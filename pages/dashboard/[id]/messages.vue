@@ -24,8 +24,6 @@ const messages = ref([]);
 
 const main = ref("");
 
-const page = ref(0);
-
 const loadingNewMessages = ref(false);
 const loadedMaxMessages = ref(false);
 
@@ -63,26 +61,38 @@ const loadedMaxMessages = ref(false);
 
 const submit = async() => {
     if(!message.value) return;
-    
-    let res = await axios.post(`${apiUrl}/api/user/${route.params.id}/messages/create`,{
-        content:message.value
-    },{
-        headers:{
-            Authorization:token.value
-        }
+        
+    let fakeId = Math.random()*Date.now();
+
+    messages.value.push({
+        content:message.value,
+        from:myUser.value,
+        loading:true,
+        fakeId
     });
-
-    let data = res.data;
-
-    messages.value = [...messages.value,data.result];
-    message.value = "";
 
     nextTick(() => {
         main.value.scrollTo({
             top: main.value.scrollHeight,
             left: 0,
+            behavior:"instant"
         });
     });
+
+    fetch(`${apiUrl}/api/user/${route.params.id}/messages/create`,{
+        method:"POST",
+        body:JSON.stringify({
+            content:message.value
+        }),
+        headers:{
+            Authorization:token.value,
+            'Content-Type':'application/json'
+        }
+    }).then(() => {
+        messages.value.find((e) => e?.fakeId == fakeId).loading = false;
+    });
+
+    message.value = "";
 };
 
 const copyClipBoard = (text) => navigator.clipboard.writeText(text);
@@ -90,9 +100,6 @@ const copyClipBoard = (text) => navigator.clipboard.writeText(text);
 onMounted(() => {
     nextTick(() => {
         nextTick(() => {
-            console.log("test");
-            console.log(sock.value);
-
             main.value.scrollTo({
                 top: main.value.scrollHeight,
                 left: 0,
@@ -102,11 +109,10 @@ onMounted(() => {
             sock.value.removeAllListeners("message");
 
             sock.value.on('message',(t) => {
-                console.log(t);
                 if(t.channel && t.channel == user.value.id){
                     messages.value.push(t.message);
                     nextTick(() => {
-                        main.value.scrollTo({
+                        main?.value?.scrollTo({
                             top: main.value.scrollHeight,
                             left: 0,
                         });
@@ -118,16 +124,13 @@ onMounted(() => {
 });
 
 const scroll = async() => {
-    console.log(messages.value[0].id);
     if(main.value.scrollTop > 30 || loadingNewMessages.value || loadedMaxMessages.value) return;
 
     loadingNewMessages.value = true;
 
     let initialHeight = main.value.scrollHeight;
     
-    page.value++;
-
-    let {data} = await useFetch(`${apiUrl}/api/user/${route.params.id}/messages?page=${page.value}&cursor=${messages.value[0].id}`,{
+    let {data} = await useFetch(`${apiUrl}/api/user/${route.params.id}/messages?cursor=${messages.value[0].id}`,{
         headers:{
             Authorization:token.value
         },
@@ -176,7 +179,10 @@ const deleteMessage = (id) => {
                 <div class="w-full flex items-center justify-center p-4" v-if="loadedMaxMessages || messages.length < 1">
                     <span class="select-none text-gray-500 text-sm font-semibold">{{ route.params.id }} ile olan sohbetin başlangıcı..</span>
                 </div>
-                <div v-for="msg in messages" :key="msg.id" class="flex flex-col w-full hover:bg-gray-700 py-2 px-4">
+                <div v-for="msg in messages" :key="msg.id" class="flex flex-col w-full hover:bg-gray-700 py-2 px-4 relative">
+                    <div v-if="msg.loading" class="absolute w-full h-full bg-black/30 top-0 left-0 flex items-center justify-center">
+                        <Loading/>
+                    </div>
                     <div class="flex flex-row w-full justify-between items-center relative">
                         <div class="flex flex-col items-start gap-2 w-full">
                             <div @click="openPopup(msg.from.id)" class="flex flex-row items-center gap-2 cursor-pointer">
