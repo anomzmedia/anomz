@@ -3,6 +3,7 @@ definePageMeta({
     middleware: [
         'auth',
     ],
+    layout:"dashboard"
 });
 
 const {public:{apiUrl}} = useRuntimeConfig();
@@ -111,41 +112,38 @@ const leaveCall = () => {
 </script>
 
 <template>
-    <div class="w-full h-full flex flex-row items-center lg:justify-normal justify-center">
-        <dashnav/>
-        <div v-if="user" class="flex flex-col w-full lg:w-5/6 h-full items-center p-4">
-            <div class="w-full bg-gray-800 py-2 px-4 rounded-full">
-               <span>{{ user.username }}</span>
+    <div v-if="user" class="flex flex-col w-full h-full items-center p-4">
+        <div class="w-full bg-gray-800 py-2 px-4 rounded-full">
+            <span>{{ user.username }}</span>
+        </div>
+        <!--<div class="w-full h-full overflow-y-scroll flex flex-col items-center">
+            <button v-if="calling" @click="leaveCall">leave call</button>
+            <button v-else @click="call">make call</button>
+        </div>-->
+        <div class="w-full h-full overflow-y-scroll flex flex-col items-center gap-5">
+            <div class="w-full flex flex-row items-center justify-center p-4 gap-5">
+                <img :src="myUser.profilePhoto" class="rounded-full border-4 border-green-600" width="96" draggable="false" alt="">
+                <img :src="user.profilePhoto" class="rounded-full" width="96" draggable="false" alt="">
             </div>
-            <!--<div class="w-full h-full overflow-y-scroll flex flex-col items-center">
-                <button v-if="calling" @click="leaveCall">leave call</button>
-                <button v-else @click="call">make call</button>
-            </div>-->
-            <div class="w-full h-full overflow-y-scroll flex flex-col items-center gap-5">
-                <div class="w-full flex flex-row items-center justify-center p-4 gap-5">
-                    <img :src="myUser.profilePhoto" class="rounded-full border-4 border-green-600" width="96" draggable="false" alt="">
-                    <img :src="user.profilePhoto" class="rounded-full" width="96" draggable="false" alt="">
-                </div>
-                <div class="flex flex-row items-center gap-5" v-if="!calling">
-                    <button @click="call" class="bg-green-600 py-2 px-3 rounded-full tooltipbtn whitespace-nowrap">
-                        <span class="tooltip">Start Voice Call</span>
-                        <i class="fa-solid fa-phone"></i>
-                    </button>
-                </div>
-                <div v-else class="flex flex-row items-center gap-5">
-                    <button @click="leaveCall" class="bg-red-600 py-2 px-3 rounded-full tooltipbtn whitespace-nowrap">
-                        <span class="tooltip">Close Call</span>
-                        <i class="fa-solid fa-phone-slash"></i>
-                    </button>
-                    <button class="bg-gray-800 py-2 px-3 rounded-full tooltipbtn whitespace-nowrap">
-                        <span class="tooltip">Share Screen</span>
-                        <i class="fa-solid fa-display"></i>
-                    </button>
-                </div>
-                <div class="flex flex-col w-full">
-                    <span>Ping: {{ping}}ms</span>
-                    <span>Server: Turkiye, Istanbul</span>
-                </div>
+            <div class="flex flex-row items-center gap-5" v-if="!calling">
+                <button @click="call" class="bg-green-600 py-2 px-3 rounded-full tooltipbtn whitespace-nowrap">
+                    <span class="tooltip">Start Voice Call</span>
+                    <i class="fa-solid fa-phone"></i>
+                </button>
+            </div>
+            <div v-else class="flex flex-row items-center gap-5">
+                <button @click="leaveCall" class="bg-red-600 py-2 px-3 rounded-full tooltipbtn whitespace-nowrap">
+                    <span class="tooltip">Close Call</span>
+                    <i class="fa-solid fa-phone-slash"></i>
+                </button>
+                <button class="bg-gray-800 py-2 px-3 rounded-full tooltipbtn whitespace-nowrap">
+                    <span class="tooltip">Share Screen</span>
+                    <i class="fa-solid fa-display"></i>
+                </button>
+            </div>
+            <div class="flex flex-col w-full">
+                <span>Ping: {{ping}}ms</span>
+                <span>Server: Turkiye, Istanbul</span>
             </div>
         </div>
     </div>
