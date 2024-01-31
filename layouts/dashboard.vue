@@ -7,6 +7,8 @@ const {public:{apiUrl}} = useRuntimeConfig();
 const route = useRoute();
 const router = useRouter();
 
+const sock = useState("sock");
+
 (async() => {
     if(!token.value) return;
     
@@ -39,6 +41,11 @@ const registerServiceWorker = async () => {
   }
 };
 
+/*const playSound = () => {
+    const audio = new Audio("/notif.mp3");
+    audio.play();
+};*/
+
 onMounted(() => {
     registerServiceWorker();
 
@@ -59,6 +66,17 @@ onMounted(() => {
         if(e.code == "Escape"){
             userModal.value = false;
             searchModal.value = false;
+        }
+    });
+
+    sock.value.on('message',(t) => {
+        if(!t.channel) return;
+        peoples.value = peoples.value.filter((e) => e.id != t.channel);
+        peoples.value.unshift(t.message.from);
+    
+        if(!route.fullPath.includes(t.message.from.username)){
+            //playSound();
+            sendNotif(t.message.from);
         }
     });
 });
@@ -153,10 +171,53 @@ const logout = () => {
     user.value = null;
 };
 
+const notifUser = ref({
+    profilePhoto:"/9.png",
+    username:"78892ad2620c3bbe"
+});
+
+const notifActive = ref(false);
+const notifTimeout = ref(null);
+
+const sendNotif = (user) => {
+    notifUser.value = user;
+
+    try {
+        clearTimeout(notifTimeout.value);
+    } catch (error) {
+        
+    }
+
+    notifActive.value = true;
+
+    notifTimeout.value = setTimeout(() => {
+        notifActive.value = false;
+    }, 2000);
+};
+
+const closeNotif = () => {
+    try {
+        clearTimeout(notifTimeout.value);
+    } catch (error) {
+        
+    }
+    
+    notifActive.value = false;
+};
+
 </script>
 
 <template>
     <div class="w-full h-full flex flex-row items-center">
+        <div @click="closeNotif" :class="`flex flex-col items-center fixed top-5 lg:w-1/2 xl:w-1/3 w-full left-1/2 -translate-x-1/2 bg-gray-800/30 backdrop-blur-sm py-2 px-4 rounded-lg border-2 border-gray-700/30 duration-300 cursor-pointer hover:scale-110 ${notifActive ? 'opacity-100 visible -translate-y-0' : 'opacity-0 invisible -translate-y-4'}`">
+            <div class="flex flex-row items-center gap-3">
+                <Profile :src="notifUser.profilePhoto" width="32" height="32"/>
+                <span>{{ notifUser.username }}</span>
+            </div>
+            <div class="w-full flex items-center justify-center">
+                <span>You have received a new message!</span>
+            </div>
+        </div>
         <div :class="`w-full h-full fixed top-0 left-0 bg-black/30 z-50 flex items-center justify-center duration-300 ${searchModal ? 'opacity-100 visible' : 'opacity-0 invisible'}`">
             <div :class="`lg:w-2/3 lg:h-2/3 w-full h-full bg-gray-800 rounded-lg flex flex-col border-2 border-gray-700 duration-300 ${searchModal ? 'scale-100' : 'scale-0'}`">
                 <div class="w-full py-2 px-4 flex flex-row items-center justify-between border-b-2 border-gray-700">
@@ -185,7 +246,13 @@ const logout = () => {
                     <button @click="userModal = !userModal">X</button>
                 </div>
                 <div class="h-full flex flex-col items-center overflow-auto py-2 px-4 gap-5">
-                    <Profile :src="user.profilePhoto" width="96" height="96" @click="uploadAvatar"/>
+                    <div class="avatar relative cursor-pointer rounded-full" @click="uploadAvatar">
+                        <div class="absolute top-0 left-0 w-full h-full rounded-full bg-black/30 flex items-center justify-center avatarin">
+                            <i class="fa-solid fa-image"></i>
+                        </div>
+                        <Profile :src="user.profilePhoto" width="96" height="96"/>
+                    </div>
+                    <span>Max File Size: 10 MB</span>
                     <button class="py-2 px-4 rounded-full bg-gray-700">Reset Password</button>
                     <button class="py-2 px-4 rounded-full bg-gray-700" @click="logout">Logout</button>
                 </div>

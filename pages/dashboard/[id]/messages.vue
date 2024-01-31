@@ -107,10 +107,9 @@ onMounted(() => {
                 behavior:"instant"
             });
 
-            sock.value.removeAllListeners("message");
+            //sock.value.removeAllListeners("message");
 
             sock.value.on('message',(t) => {
-                console.log(t);
                 if(t.channel && t.channel == user.value.id){
                     messages.value.push(t.message);
                     nextTick(() => {

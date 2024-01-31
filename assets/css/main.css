@@ -134,4 +134,12 @@
     .tooltipbtn:hover .tooltip{
         @apply visible opacity-100;
     }
+
+    .avatar .avatarin{
+        @apply opacity-0 invisible duration-300;
+    }
+
+    .avatar:hover .avatarin{
+        @apply opacity-100 visible;
+    }
 }
