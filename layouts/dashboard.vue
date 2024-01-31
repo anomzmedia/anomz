@@ -78,6 +78,41 @@ const searchFind = ref(null);
 const searchLoading = ref(false);
 const userModal = ref(false);
 
+const avatarFileInputChange = async(e) => {
+    let file = e.target.files[0];
+    //10 MB = 10485760 BAYT
+    if(file.size > 10485760 && !file.type.includes('image')) return;
+
+    let data = new FormData();
+    data.append('avatar', file);
+
+    let res = await fetch(`${apiUrl}/api/user/me`,{
+        method:"PUT",
+        body:data,
+        headers:{
+            Authorization:token.value
+        }
+    });
+    let json = await res.json();
+
+    if(!json.success) return;
+
+    user.value.profilePhoto = json.avatar;
+};
+
+const uploadAvatar = () => {
+    //avatarFileInput.click()
+    let input = document.createElement('input');
+    input.type = "file";
+    input.style = "display:none";
+
+    input.addEventListener('change',avatarFileInputChange)
+
+    document.body.appendChild(input);
+
+    input.click();
+};
+
 watch(searchUsername,async(val,oldVal) => {
     if(!val) return searchFind.value = null;
     searchLoading.value = true;
@@ -134,7 +169,7 @@ const logout = () => {
                         <Loading/>
                     </div>
                     <nuxt-link v-else-if="searchFind" @click="searchModal = false" :to="`/dashboard/${searchFind.username}`" class="flex flex-row items-center gap-3 bg-gray-700 rounded-full py-2 px-4">
-                        <img :src="searchFind.profilePhoto" class="rounded-full" draggable="false" width="32" height="32" alt="">
+                        <Profile :src="searchFind.profilePhoto" width="32" height="32"/>
                         <span>{{ searchFind.username }}</span>
                     </nuxt-link>
                     <div v-else class="flex items-center justify-center w-full">
@@ -150,7 +185,7 @@ const logout = () => {
                     <button @click="userModal = !userModal">X</button>
                 </div>
                 <div class="h-full flex flex-col items-center overflow-auto py-2 px-4 gap-5">
-                    <img :src="user.profilePhoto" class="rounded-full" draggable="false" width="96" height="96" alt="">
+                    <Profile :src="user.profilePhoto" width="96" height="96" @click="uploadAvatar"/>
                     <button class="py-2 px-4 rounded-full bg-gray-700">Reset Password</button>
                     <button class="py-2 px-4 rounded-full bg-gray-700" @click="logout">Logout</button>
                 </div>
@@ -173,7 +208,7 @@ const logout = () => {
             </div>
             <div v-if="peoplesActive && peoples.length > 0" class="flex flex-col w-full gap-3">
                 <nuxt-link :to="`/dashboard/${people.username}/`" class="flex flex-row items-center hover:bg-gray-700 p-1 w-full duration-300 rounded gap-3" v-for="people in peoples" :key="people.id">
-                    <img :src="people.profilePhoto" width="32" height="32" class="rounded-full" draggable="false" alt="">
+                    <Profile :src="people.profilePhoto" width="32" height="32"/>
                     <span class="overflow-hidden text-ellipsis">{{ people.username }}</span>
                 </nuxt-link>
             </div>
@@ -189,7 +224,7 @@ const logout = () => {
             </div>
             <div v-if="groupsActive && groups.length > 0" class="flex flex-col w-full gap-3">
                 <nuxt-link :to="`/dashboard/groups/${group.id}/`" class="flex flex-row items-center hover:bg-gray-700 p-1 w-full duration-300 rounded gap-3" v-for="group in groups" :key="group.id">
-                    <img :src="group.profilePhoto" width="32" height="32" class="rounded-full" draggable="false" alt="">
+                    <Profile :src="group.profilePhoto" width="32" height="32"/>
                     <span class="overflow-hidden text-ellipsis whitespace-nowrap">{{ group.name }}</span>
                 </nuxt-link>
                 <nuxt-link class="flex flex-row items-center bg-gray-700 py-2 px-4 gap-3 rounded-full" to="/dashboard/groups/create">
@@ -201,7 +236,7 @@ const logout = () => {
                 <Loading/>
             </div>
             <div @click="userModal = !userModal" class="flex flex-row items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 duration-300 border-[1px] border-gray-500 cursor-pointer w-full py-2 px-4 rounded-full" v-if="user">
-                <img :src="user.profilePhoto" width="32" height="32" class="rounded-full w-[32px] h-[32px]" alt="">
+                <Profile :src="user.profilePhoto" width="32" height="32"/>
                 <span class="text-ellipsis overflow-hidden">{{ user.username }}</span>
             </div>
         </div>

@@ -110,6 +110,7 @@ onMounted(() => {
             sock.value.removeAllListeners("message");
 
             sock.value.on('message',(t) => {
+                console.log(t);
                 if(t.channel && t.channel == user.value.id){
                     messages.value.push(t.message);
                     nextTick(() => {
@@ -167,7 +168,7 @@ const deleteMessage = (id) => {
 <template>
     <div class="flex flex-col w-full h-full p-4">
         <div v-if="user" class="flex flex-row items-center gap-3 bg-gray-800 p-2 rounded-full">
-            <img class="rounded-full w-[32px] h-[32px]" draggable="false" width="32" height="32" :src="user.profilePhoto" alt="">
+            <Profile :src="user.profilePhoto" width="32" height="32"/>
             <span>{{ user.username }}</span>
             <nuxt-link :to="`/dashboard/${user.username}/voice`">make call</nuxt-link>
         </div>
@@ -185,7 +186,7 @@ const deleteMessage = (id) => {
                 <div class="flex flex-row w-full justify-between items-center relative">
                     <div class="flex flex-col items-start gap-2 w-full">
                         <div @click="openPopup(msg.from.id)" class="flex flex-row items-center gap-2 cursor-pointer">
-                            <img class="w-[32px] h-[32px] rounded-full" alt="" draggable="false" :src="msg.from.profilePhoto" width="32">
+                            <Profile :src="msg.from.profilePhoto" width="32" height="32"/>
                             <span>{{ msg.from.username }}</span>
                         </div>
                         <span class="select-text whitespace-normal w-full max-w-full">{{ msg.content }}</span>

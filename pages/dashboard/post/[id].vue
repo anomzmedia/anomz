@@ -72,7 +72,7 @@
         <!--<modal @close-modal="modalActive = false" :class="`duration-300 ${modalActive ? 'opacity-100 visible' : 'opacity-0 invisible'}`" :user="post.author"/>-->
         <UserModal @close-modal="modalActive = false" :username="usrrnm" :class="`duration-300 ${modalActive ? 'opacity-100 visible' : 'opacity-0 invisible'}`"/>
         <div @click="modalActive = true; usrrnm = post.author.username" class="w-full bg-gray-800 py-2 px-4 gap-3 rounded-lg flex flex-row items-center cursor-pointer">
-            <img :src="post.author.profilePhoto" width="32" height="32" class="rounded-full" draggable="false" alt="">
+            <Profile :src="post.author.profilePhoto" width="32" height="32"/>
             <span>{{ post.author.username }}</span>
         </div>
         <span class="w-full bg-gray-800 py-2 px-4 rounded-lg overflow-auto whitespace-pre-wrap h-1/2 select-text">
@@ -86,7 +86,7 @@
             </form>
             <div class="w-full bg-gray-800 py-2 px-4 rounded-lg flex flex-col gap-2" v-for="comment in comments" :key="comment.id">
                 <div @click="modalActive = true; usrrnm = comment.author.username" class="flex flex-row items-center gap-2 cursor-pointer">
-                    <img :src="comment.author.profilePhoto" class="rounded-full" width="32" height="32" alt="">
+                    <Profile :src="comment.author.profilePhoto" width="32" height="32"/>
                     <span>{{ comment.author.username }}</span>
                 </div>
                 <span>{{ comment.content }}</span>

@@ -80,7 +80,7 @@
                     </div>
                     <div @click="addUser" class="flex flex-row items-center justify-between bg-gray-700 hover:bg-gray-600 cursor-pointer duration-300 rounded-full py-2 px-4" v-else-if="addUserFind">
                         <div class="flex flex-row items-center gap-3">
-                            <img :src="addUserFind.profilePhoto" width="32" class="rounded-full" draggable="false" alt="">
+                            <Profile :src="addUserFind.profilePhoto" width="32" height="32"/>
                             <span>{{ addUserFind.username }}</span>
                         </div>
                         <i class="fa-solid fa-user-plus"></i>
@@ -101,12 +101,12 @@
             </button>
             <div class="flex flex-col overflow-auto gap-3">
                 <div class="flex flex-row items-center gap-1 bg-gray-800/50 cursor-not-allowed duration-300 py-2 px-4 rounded-full">
-                    <img :src="user.profilePhoto" width="32" height="32" class="rounded-full" alt="">
+                    <Profile :src="user.profilePhoto" width="32" height="32"/>
                     <span>{{ user.username }}</span>
                     <i class="fa-solid fa-user-minus"></i>
                 </div>
                 <div @click="deleteUser(user.id)" v-for="user in users" class="flex flex-row items-center gap-1 bg-gray-800 hover:bg-gray-700 cursor-pointer duration-300 py-2 px-4 rounded-full">
-                    <img :src="user.profilePhoto" width="32" height="32" class="rounded-full" alt="">
+                    <Profile :src="user.profilePhoto" width="32" height="32"/>
                     <span>{{ user.username }}</span>
                     <i class="fa-solid fa-user-minus"></i>
                 </div>

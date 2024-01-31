@@ -156,7 +156,7 @@
             <div :class="`lg:w-2/3 lg:h-2/3 w-full h-full bg-gray-800 rounded-lg flex flex-col border-2 border-gray-700 duration-300 ${modalActive ? 'scale-100' : 'scale-0'}`">
                 <div class="flex flex-row items-center justify-between w-full p-4 border-b-2 border-gray-700">
                     <div class="flex flex-row items-center gap-3">
-                        <img :src="group.profilePhoto" draggable="false" width="32" alt="">
+                        <Profile :src="group.profilePhoto" width="32" height="32"/>
                         <span>{{ group.name }}</span>
                     </div>
                     <button @click="modalActive = false;">X</button>
@@ -165,7 +165,7 @@
                     <span>Kullanıcılar</span>
                     <button v-for="user in group.users" :key="user.id" class="w-full gap-3 bg-gray-700 rounded-full flex flex-row items-center justify-between py-2 px-4">
                         <div class="flex flex-row items-center gap-3">
-                            <img draggable="false" :src="user.profilePhoto" class="rounded-full" width="32" alt="">
+                            <Profile :src="user.profilePhoto" width="32" height="32"/>
                             <span>{{ user.username }}</span>
                         </div>
                         <i v-if="group.ownerId == user.id" class="fa-solid fa-chess-king text-yellow-600"></i>
@@ -179,7 +179,7 @@
             </div>
         </div>
         <button v-if="group" @click="modalActive = true;" class="flex flex-row items-center bg-gray-800 py-2 px-4 rounded-full w-full gap-3">
-            <img width="32" height="32" draggable="false" class="rounded-full" :src="group.profilePhoto" alt="">
+            <Profile :src="group.profilePhoto" width="32" height="32"/>
             <span>{{ group.name }}</span>
         </button>
         <div v-if="messages.length > 0" @scroll="scroll" ref="main" class="w-full h-full flex flex-col overflow-y-scroll">
@@ -193,7 +193,7 @@
                 <div class="flex flex-row w-full justify-between items-center relative">
                     <div class="flex flex-col items-start gap-2 w-full">
                         <div v-if="msg.from && !msg.system" class="flex flex-row items-center gap-2 cursor-pointer">
-                            <img class="w-[32px] h-[32px] rounded-full" alt="" draggable="false" :src="msg.from.profilePhoto" width="32">
+                            <Profile :src="msg.from.profilePhoto" width="32" height="32"/>
                             <span>{{ msg.from.username }}</span>
                         </div>
                         <div v-else class="flex flex-row items-center gap-2 cursor-pointer">

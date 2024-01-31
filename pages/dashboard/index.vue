@@ -93,7 +93,7 @@
         <div v-else v-for="post in posts" :key="post.id" class="py-2 px-4 w-full bg-gray-800 rounded-lg flex flex-col gap-3">
             <div @click="modalActive = true; usrnm = post.author.username" class="w-auto flex flex-row gap-2 items-center cursor-pointer">
                 <div class="relative z-10">
-                    <img draggable="false" :src="post.author.profilePhoto" class="rounded-full" width="32" alt="">
+                    <Profile :src="post.author.profilePhoto" width="32" height="32"/>
                     <span class="border-2 border-green-600 text-green-600 bg-green-600 w-3 h-3 block rounded-full absolute right-[-2px] bottom-[-2px]"></span>
                 </div>
                 <span>{{post.author.username}}</span>

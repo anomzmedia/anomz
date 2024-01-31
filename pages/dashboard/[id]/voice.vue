@@ -122,8 +122,8 @@ const leaveCall = () => {
         </div>-->
         <div class="w-full h-full overflow-y-scroll flex flex-col items-center gap-5">
             <div class="w-full flex flex-row items-center justify-center p-4 gap-5">
-                <img :src="myUser.profilePhoto" class="rounded-full border-4 border-green-600" width="96" draggable="false" alt="">
-                <img :src="user.profilePhoto" class="rounded-full" width="96" draggable="false" alt="">
+                <Profile :src="myUser.profilePhoto" width="96" height="96"/>
+                <Profile :src="user.profilePhoto" width="96" height="96"/>
             </div>
             <div class="flex flex-row items-center gap-5" v-if="!calling">
                 <button @click="call" class="bg-green-600 py-2 px-3 rounded-full tooltipbtn whitespace-nowrap">

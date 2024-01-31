@@ -38,7 +38,7 @@ get();
             </div>
             <div v-if="user" class="overflow-auto w-full h-full flex flex-col items-center gap-3 py-2">
                 <div class="relative">
-                    <img draggable="false" :src="user.profilePhoto" width="64" height="64" class="rounded-full" alt="">
+                    <Profile :src="user.profilePhoto" width="64" height="64"/>
                     <span v-if="user.active" class="absolute bottom-0 right-0 block w-[10px] h-[10px] border-[3px] border-green-600 rounded-full"></span>
                     <span v-else class="absolute bottom-0 right-0 block w-[10px] h-[10px] border-[3px] border-gray-600 rounded-full"></span>
                 </div>
