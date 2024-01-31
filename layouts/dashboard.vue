@@ -41,10 +41,11 @@ const registerServiceWorker = async () => {
   }
 };
 
-/*const playSound = () => {
-    const audio = new Audio("/notif.mp3");
-    audio.play();
-};*/
+const audio = ref(null);
+
+const playSound = () => {
+    audio.value.play();
+};
 
 onMounted(() => {
     registerServiceWorker();
@@ -75,10 +76,12 @@ onMounted(() => {
         peoples.value.unshift(t.message.from);
     
         if(!route.fullPath.includes(t.message.from.username)){
-            //playSound();
+            playSound();
             sendNotif(t.message.from);
         }
     });
+
+    audio.value = new Audio("/notif.mp3");
 });
 
 const peoplesActive = ref(true);
@@ -201,7 +204,7 @@ const closeNotif = () => {
     } catch (error) {
         
     }
-    
+
     notifActive.value = false;
 };
 
