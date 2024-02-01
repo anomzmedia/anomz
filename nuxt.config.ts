@@ -14,6 +14,52 @@ export default defineNuxtConfig({
   app:{
     head:{
       title:"anomz",
+      meta:[
+        {
+          property:"og:title",
+          content:"Anomz"
+        },
+        {
+          property:"og:description",
+          content:"Anomz free and open source chat software"
+        },
+        {
+          property:"og:image",
+          content:"/anomz2.png"
+        },
+        {
+          property:"og:type",
+          content:"website"
+        },
+        {
+          property:"og:url",
+          content:"https://anomz.software"
+        },
+        {
+          property:"og:locale",
+          content:"en_GB"
+        },
+        {
+          property:"og:locale:alternate",
+          content:"en_US"
+        },
+        {
+          property:"og:locale:alternate",
+          content:"tr_TR"
+        },
+        {
+          name:"description",
+          content:"Anomz free and open source chat software"
+        },
+        {
+          name:"keywords",
+          content:"anomz, arasemr12, arasemr1234, github, chat, software, open_source"
+        },
+        {
+          name:"author",
+          content:"arasemr12"
+        },
+      ],
       script:[
         {
           src:"https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js",
