@@ -1,4 +1,6 @@
 <script setup>
+import { vAutoAnimate } from '@formkit/auto-animate';
+
 const user = useState("user");
 const token = useCookie("token");
 
@@ -87,7 +89,7 @@ onMounted(() => {
 const peoplesActive = ref(true);
 const groupsActive = ref(false);
 
-const peoples = ref([]);
+const peoples = useState("peoples",() => []);
 const groups = ref([]);
 
 const peoplesLoading = ref(true);
@@ -258,6 +260,7 @@ const closeNotif = () => {
                     <span>Max File Size: 10 MB</span>
                     <button class="py-2 px-4 rounded-full bg-gray-700">Reset Password</button>
                     <button class="py-2 px-4 rounded-full bg-gray-700" @click="logout">Logout</button>
+                    <nuxt-link class="text-green-400" to="/visibility">Who can see my data?</nuxt-link>
                 </div>
             </div>
         </div>
@@ -276,7 +279,7 @@ const closeNotif = () => {
                 <i :class="`fa-solid fa-chevron-right text-gray-400 duration-300 ${peoplesActive ? 'rotate-90' : ''}`"></i>
                 <span class="text-gray-400">Peoples</span>
             </div>
-            <div v-if="peoplesActive && peoples.length > 0" class="flex flex-col w-full gap-3">
+            <div v-if="peoplesActive && peoples.length > 0" class="flex flex-col w-full gap-3" v-auto-animate>
                 <nuxt-link :to="`/dashboard/${people.username}/`" class="flex flex-row items-center hover:bg-gray-700 p-1 w-full duration-300 rounded gap-3" v-for="people in peoples" :key="people.id">
                     <Profile :src="people.profilePhoto" width="32" height="32"/>
                     <span class="overflow-hidden text-ellipsis">{{ people.username }}</span>

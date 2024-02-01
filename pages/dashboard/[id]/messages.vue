@@ -1,5 +1,6 @@
 <script setup>
 import axios from 'axios';
+import { vAutoAnimate } from '@formkit/auto-animate';
 
 definePageMeta({
     middleware: [
@@ -27,6 +28,8 @@ const main = ref("");
 
 const loadingNewMessages = ref(false);
 const loadedMaxMessages = ref(false);
+
+const peoples = useState("peoples",() => []);
 
 (async() => {
     if(!route.params.id || myUser.value.username == route.params.id) return router.push("/dashboard/");
@@ -61,6 +64,10 @@ const loadedMaxMessages = ref(false);
 })();
 
 const submit = async() => {
+    peoples.value = peoples.value.filter((e) => e.username != user.value.username);
+
+    peoples.value.unshift(user.value);
+
     if(!message.value) return;
         
     let fakeId = Math.random()*Date.now();
@@ -171,7 +178,7 @@ const deleteMessage = (id) => {
             <span>{{ user.username }}</span>
             <nuxt-link :to="`/dashboard/${user.username}/voice`">make call</nuxt-link>
         </div>
-        <div @scroll="scroll" ref="main" class="h-full overflow-y-auto">
+        <div @scroll="scroll" ref="main" class="h-full overflow-y-auto" v-auto-animate>
             <div class="w-full flex items-center justify-center" v-if="loadingNewMessages">
                 <loading/>
             </div>
