@@ -15,7 +15,7 @@ const initIO = () => {
 const closeIO = () => {
     const sock = useState("sock");
     
-    sock.value.close();
+    sock?.value?.close();
 };
 
 export {initIO,closeIO};

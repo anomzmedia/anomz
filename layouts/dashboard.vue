@@ -52,7 +52,15 @@ const playSound = () => {
 onMounted(() => {
     registerServiceWorker();
 
-    if(user.value) initIO();
+    if(user.value) {
+        try {
+            closeIO();
+        } catch (error) {
+            
+        }
+
+        initIO();
+    }
 
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -174,6 +182,12 @@ const logout = () => {
     
     token.value = null;
     user.value = null;
+
+    try {
+        closeIO();
+    } catch (error) {
+        
+    }
 };
 
 const notifUser = ref({
