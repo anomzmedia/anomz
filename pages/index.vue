@@ -1,42 +1,78 @@
+<script setup>
+
+import Typewriter from 'typewriter-effect/dist/core';
+
+const s = ref(true);
+
+onMounted(() => {
+
+});
+
+const features = ref([
+    {
+        title:"Security",
+        content:"Anomz keeps your data private"
+    },
+    {
+        title:"Open source",
+        content:"Anomz is open source project"
+    },
+    {
+        title:"User Friendly",
+        content:"User Friendly"
+    },
+    {
+        title:"Compatibility",
+        content:"Anomz compatible every device"
+    }
+])
+
+</script>
+
 <template>
-    <div class="w-full h-full overflow-auto">
-        <div class="w-full h-full flex flex-col items-center justify-center gap-y-3 text-center">
-            <img src="/anomz2.png" width="96" draggable="false" alt="">
-            <span class="font-bold uppercase text-4xl">Anomz</span>
-            <span>Herkesin anonim olarak sohbet edebildiği özgürlükçü platform</span>
-            <a href="https://www.producthunt.com/posts/anomz?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-anomz" target="_blank">
-                <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=407824&theme=dark" alt="Anomz - Open&#0032;source&#0032;anonymous&#0032;social&#0032;media&#0046; | Product Hunt" style="width: 250px; height: 52px;" width="250" height="54" />
-            </a>
-            <button class="whtroundbtn opacity-50 cursor-not-allowed text-black flex flex-row items-center justify-center gap-1"><i class="fa-solid fa-download text-black"></i>Download</button>
-            <nuxt-link class="roundbtn" to="/dashboard/">Open Anomz in your browser</nuxt-link>
-            <a class="mt-8" href="#two">
-                <i class="fa-solid fa-caret-down fa-2x text-gray-400 hover:text-white hover:-translate-y-[2px] duration-300"></i>
-            </a>
+    <div class="w-full h-full">
+        <div v-if="s" class="fixed bottom-4 right-4 py-2 px-4 bg-gray-800 flex flex-row items-center gap-3 text-xs rounded z-50">
+            <img src="/anomz2.png" draggable="false" width="32" height="32" alt="">
+            <span>Anomz</span>
+            <span>|</span>
+            <span>Join Us!</span>
+            <button class="py-1 px-2 bg-gray-700 rounded-full">Discord</button>
+            <span class="w-[10px] h-[10px] bg-white block rounded-full cursor-pointer" @click="s = !s"></span>
         </div>
-        <div class="w-full h-full flex items-center justify-center" id="two">
-            <div class="w-full lg:w-3/4 h-full flex flex-col lg:flex-row items-center justify-center gap-3 p-4 lg:p-0">
-                <a href="https://github.com/anomzmedia/anomz" target="_blank" class="flex flex-col items-center gap-1 bg-gray-800 p-4 rounded w-full lg:w-1/3">
-                    <i class="fa-solid fa-lock fa-2x"></i>
-                    <span class="text-xl font-bold">Open Source</span>
-                    <!--<span>Open source and flexible hosting to enable data sovereignty.</span>-->
-                </a>
-                <div class="flex flex-col items-center gap-1 bg-gray-800 p-4 rounded w-full lg:w-1/3">
-                    <i class="fa-solid fa-shield-halved fa-2x"></i>
-                    <span class="text-xl font-bold">Security</span>
-                    <!--<span>Open source and flexible hosting to enable data sovereignty.</span>-->
+        <div class="w-full h-full flex items-center justify-center">
+            <!--<img class="absolute top-0 left-0 w-full h-full z-10" src="/bg.jpg" alt="">-->
+            <span class="block absolute top-0 left-0 w-full h-full z-10 bg-[url('/bg.jpg')] bg-cover"></span>
+            <span class="block absolute top-0 left-0 w-full h-full z-20 bg-gradient-to-bl to-black from-black/30"></span>
+            <div data-aos="fade-down" class="lg:w-2/3 w-full h-full flex flex-col items-center justify-center gap-6 z-30">
+                <div class="flex flex-col gap-3 items-center">
+                    <img src="/anomz2.png" width="128" height="128" class="rounded-full" draggable="false" alt="">
+                    <h1 class="text-4xl font-semibold">Anomz</h1>
                 </div>
-                <div class="flex flex-col items-center gap-1 bg-gray-800 p-4 rounded w-full lg:w-1/3">
-                    <i class="fa-solid fa-user-ninja fa-2x"></i>
-                    <span class="text-xl font-bold">Anonymous</span>
-                    <!--<span>Open source and flexible hosting to enable data sovereignty.</span>-->
+                <span id="tt" class="text-xl">Free and open source chat software</span>
+                <div class="flex lg:flex-row flex-col items-center gap-3">
+                    <nuxt-link to="/dashboard" class="py-2 px-4 border-2 hover:bg-white hover:text-black rounded-full duration-300">Dashboard</nuxt-link>
+                    <a href="#features" class="py-2 px-4 border-2 hover:bg-white hover:text-black rounded-full duration-300">Anomz features</a>
                 </div>
             </div>
         </div>
-        <div class="w-full h-full hidden lg:flex items-center justify-center">
-            <div class="w-full h-full lg:w-2/3 lg:h-2/3 flex items-center justify-center relative">
-                <img src="/main2.png" class="w-full h-full rounded-lg" draggable="false" alt="">
-                <img src="/main4.png" class="absolute h-full right-0 top-20" draggable="false" alt="">
+        <div id="features" class="w-full h-full flex items-center justify-center bg-black">
+            <span class="glowbg lg:w-[500px] lg:h-[500px] w-full h-full"></span>
+            <div data-aos="fade-down" data-aos-delay="0" class="lg:w-2/3 w-full h-full flex flex-col lg:flex-row items-center">
+                <div class="flex flex-col lg:w-1/2 w-full gap-3">
+                    <h1 class="text-2xl font-semibold">Anomz Features</h1>
+                    <button v-for="feature in features" class="flex flex-row items-center justify-between bg-black border-[1px] border-gray-800 py-2 px-4 gap-1 duration-300">
+                        <div class="flex flex-col items-start">
+                            <span>{{feature.title}}</span>
+                            <span class="text-gray-400">{{ feature.content }}</span>
+                        </div>
+                        <i class="fa-solid fa-star p-2 bg-white text-black rounded-full"></i>
+                    </button>
+                </div>
+                <div class="lg:flex flex-col lg:w-1/2 w-full items-center justify-center p-24 hidden">
+                    <img class="w-full h-full" draggable="false" src="/anomz2.png" alt="">
+                </div>
             </div>
         </div>
+        <Footer/>
     </div>
 </template>

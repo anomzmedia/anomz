@@ -1,4 +1,8 @@
 <script setup>
+import "aos/dist/aos.css";
+
+import AOS from "aos";
+
 const user = useState("user");
 const token = useCookie("token");
 
@@ -39,6 +43,8 @@ const registerServiceWorker = async () => {
 };
 
 onMounted(() => {
+  AOS.init();
+  
     registerServiceWorker();
 
     window.dataLayer = window.dataLayer || [];

@@ -42,7 +42,7 @@
     }
 
     ::-webkit-scrollbar{
-        @apply w-[8px] bg-gray-800 rounded-full;
+        @apply w-[8px] bg-gray-800 rounded-full z-50;
     }
 
     ::-webkit-scrollbar-thumb{
@@ -141,5 +141,15 @@
 
     .avatar:hover .avatarin{
         @apply opacity-100 visible;
+    }
+
+    .glowbg{
+        background-image: linear-gradient(to right top,#6c22bd,#8b25bb,#a52bb9,#bc34b7,#d040b5,#e645a5,#f55195,#ff6188,#ff796e,#ff965b,#f5b255,#e1cd60);
+        width: 500px;
+        height: 500px;
+        position: absolute;
+        filter: blur(100px);
+        transform: skewY(0deg) translate(0%,0) scale(.7) translateZ(0);
+        opacity: 70%;
     }
 }
