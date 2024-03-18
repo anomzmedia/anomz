@@ -1,11 +1,8 @@
 <script setup>
-
-import Typewriter from 'typewriter-effect/dist/core';
-
 const s = ref(true);
 
 onMounted(() => {
-
+    
 });
 
 const features = ref([

@@ -10,6 +10,8 @@ const route = useRoute();
 const router = useRouter();
 
 const sock = useState("sock");
+const voiceChat = ref(null);
+const voiceStream = ref(null);
 
 (async() => {
     if(!token.value) return;
@@ -49,7 +51,59 @@ const playSound = () => {
     audio.value.play();
 };
 
+const peerConnection = useState("peerConnection");
+
+const callStatus = useState("callStatus");
+
 onMounted(() => {
+    voiceChat.value = new MediaStream();
+    
+    voiceStream.value.srcObject = voiceChat.value;
+
+    const {RTCPeerConnection, RTCSessionDescription} = window;
+
+    peerConnection.value = new RTCPeerConnection({
+        configuration: {
+            offerToReceiveAudio: true,
+            offerToReceiveVideo: true
+        },
+        iceServers: [{
+            urls:[
+                "stun:stun.l.google.com:19302",
+                "stun:stun1.l.google.com:19302",
+                "stun:stun2.l.google.com:19302",
+                "stun:stun3.l.google.com:19302",
+                "stun:stun4.l.google.com:19302",
+                "stun:stun01.sipphone.com",
+                "stun:stun.ekiga.net",
+                "stun:stun.fwdnet.net",
+                "stun:stun.ideasip.com",
+                "stun:stun.iptel.org",
+                "stun:stun.rixtelecom.se",
+                "stun:stun.schlund.de",
+                "stun:stunserver.org",
+                "stun:stun.softjoys.com",
+                "stun:stun.voiparound.com",
+                "stun:stun.voipbuster.com",
+                "stun:stun.voipstunt.com",
+                "stun:stun.voxgratia.org",
+                "stun:stun.xten.com",
+            ]
+        }]
+    });
+
+    peerConnection.value.onicecandidate = (c) => {
+        if(!c.candidate) return;
+        sock.value.emit("candidate",{
+            to:callStatus.value.userId,
+            candidate:c.candidate
+        });
+    };
+
+    peerConnection.value.ontrack = (t) => {
+        voiceChat.value.addTrack(t.track);
+    };
+
     registerServiceWorker();
 
     if(user.value) {
@@ -89,6 +143,50 @@ onMounted(() => {
             playSound();
             sendNotif(t.message.from);
         }
+    });
+
+    sock.value.on("madeOffer",({offer,from}) => {
+        playSound();
+        callStatus.value = {
+            calling:false,
+            userId:from,
+            offer:{
+                sdp:offer.sdp,
+                type:offer.type
+            }
+        };
+    });
+
+    sock.value.on("madeAnswer",async({answer,from}) => {
+        console.log(answer,from)
+        if(callStatus.value.userId != from) return;
+        console.log("ff")
+        await peerConnection.value.setRemoteDescription(new RTCSessionDescription(answer));
+    });
+
+    sock.value.on("cancelOfferClient",({from}) => {
+        if(!callStatus.value || callStatus.value.userId != from) return;
+        callStatus.value = null;
+    });
+
+    sock.value.on("rejectedOffer",({from}) => {
+        if(callStatus.value || callStatus.value.userId != from) return;
+        callStatus.value = null;
+    });
+
+    sock.value.emit("getWaitingOffers",({success,find}) => {
+        if(find.length < 1) return;
+        callStatus.value = {
+            calling:false,
+            userId:find[0]?.from,
+            offer:find[0]?.offer
+        }
+    });
+
+    sock.value.on("candidateClient",({candidate}) => {
+        console.log(peerConnection.value.remoteDescription);
+        if(!peerConnection.value.remoteDescription) return;
+        peerConnection.value.addIceCandidate(new RTCIceCandidate(candidate));
     });
 
     audio.value = new Audio("/notif.mp3");
@@ -224,10 +322,13 @@ const closeNotif = () => {
     notifActive.value = false;
 };
 
+
+
 </script>
 
 <template>
     <div class="w-full h-full flex flex-row items-center">
+        <video class="absolute top-0 left-0" autoplay playsinline ref="voiceStream"></video>
         <div @click="closeNotif" :class="`flex flex-col items-center fixed top-5 lg:w-1/2 xl:w-1/3 w-full left-1/2 -translate-x-1/2 bg-gray-800/30 backdrop-blur-sm py-2 px-4 rounded-lg border-2 border-gray-700/30 duration-300 cursor-pointer hover:scale-110 ${notifActive ? 'opacity-100 visible -translate-y-0' : 'opacity-0 invisible -translate-y-4'}`">
             <div class="flex flex-row items-center gap-3">
                 <Profile :src="notifUser.profilePhoto" width="32" height="32"/>
@@ -235,6 +336,21 @@ const closeNotif = () => {
             </div>
             <div class="w-full flex items-center justify-center">
                 <span>You have received a new message!</span>
+            </div>
+        </div>
+        <div v-if="callStatus" class="right-4 top-4 fixed w-1/4 h-auto bg-gray-800/50 backdrop-blur-sm py-2 px-4 rounded-lg flex flex-col gap-3 z-50 border-2 border-gray-700/50">
+            <div class="flex flex-row items-center gap-3">
+                <Profile src="/9.png" width="32" height="32"/>
+                <span>2c166157432d5fe0</span>
+            </div>
+            <span v-if="callStatus?.calling">User calling..</span>
+            <div v-else class="flex flex-row items-center gap-3">
+                <div @click="acceptCall" class="flex items-center justify-center w-[32px] h-[32px] bg-green-600 rounded-full cursor-pointer">
+                    <i class="fa-solid fa-phone"></i>
+                </div>
+                <div @click="rejectCall" class="flex items-center justify-center w-[32px] h-[32px] bg-red-600 rounded-full cursor-pointer">
+                    <i class="fa-solid fa-phone-slash"></i>
+                </div>
             </div>
         </div>
         <div :class="`w-full h-full fixed top-0 left-0 bg-black/30 z-50 flex items-center justify-center duration-300 ${searchModal ? 'opacity-100 visible' : 'opacity-0 invisible'}`">
@@ -294,7 +410,7 @@ const closeNotif = () => {
                 <span class="text-gray-400">Peoples</span>
             </div>
             <div v-if="peoplesActive && peoples.length > 0" class="flex flex-col w-full gap-3" v-auto-animate>
-                <nuxt-link :to="`/dashboard/${people.username}/`" class="flex flex-row items-center hover:bg-gray-700 p-1 w-full duration-300 rounded gap-3" v-for="people in peoples" :key="people.id">
+                <nuxt-link :to="`/dashboard/${people.username}/messages`" class="flex flex-row items-center hover:bg-gray-700 p-1 w-full duration-300 rounded gap-3" v-for="people in peoples" :key="people.id">
                     <Profile :src="people.profilePhoto" width="32" height="32"/>
                     <span class="overflow-hidden text-ellipsis">{{ people.username }}</span>
                 </nuxt-link>
