@@ -13,6 +13,7 @@ const callUser = async(userId) => {
         offerToReceiveAudio:true,
         offerToReceiveVideo:true
     });
+    
     await peerConnection.value.setLocalDescription(offer);
 
     sock.value.emit("makeOffer",{

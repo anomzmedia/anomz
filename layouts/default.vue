@@ -6,21 +6,21 @@ import AOS from "aos";
 const user = useState("user");
 const token = useCookie("token");
 
-const {public:{apiUrl}} = useRuntimeConfig();
+const { public: { apiUrl } } = useRuntimeConfig();
 
 const route = useRoute();
 
-(async() => {
-    if(!token.value) return;
-    
-    let {data} = await useFetch(`${apiUrl}/api/auth/me`,{
-        headers:{
-            Authorization:token.value
-        }
-    });
+(async () => {
+  if (!token.value) return;
 
-    if(!data.value || !data.value.success) return token.value = null;
-    user.value = data.value.user;
+  let { data } = await useFetch(`${apiUrl}/api/auth/me`, {
+    headers: {
+      Authorization: token.value
+    }
+  });
+
+  if (!data.value || !data.value.success) return token.value = null;
+  user.value = data.value.user;
 })();
 
 const registerServiceWorker = async () => {
@@ -44,24 +44,18 @@ const registerServiceWorker = async () => {
 
 onMounted(() => {
   AOS.init();
-  
-    registerServiceWorker();
 
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-Y7SZD3FFP8');
+  registerServiceWorker();
 });
 
 </script>
 
 <template>
+  <div class="w-full h-full">
+    <Navbar v-if="!route.path.includes('dashboard')" />
+    <mobile-navbar v-if="!route.path.includes('dashboard')" />
     <div class="w-full h-full">
-        <navbar v-if="!route.path.includes('dashboard')"/>
-        <mobile-navbar v-if="!route.path.includes('dashboard')"/>
-        <div class="w-full h-full">
-            <slot/>
-        </div>
+      <slot />
     </div>
+  </div>
 </template>

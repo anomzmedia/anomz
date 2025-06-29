@@ -1,16 +1,20 @@
 export default defineNuxtConfig({
   devtools: { enabled: false },
-  modules:["@nuxtjs/tailwindcss"],
-  tailwindcss:{
-    viewer:false,
-    configPath:"~/tailwind.config.js",
-    cssPath:"~/assets/css/main.css"
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
   },
+  css:["~/assets/css/main.css"],
   runtimeConfig:{
     public:{
       apiUrl:process.env.API_URL
     }
   },
+
+  modules:[],
+
   app:{
     head:{
       title:"anomz",
@@ -91,5 +95,7 @@ export default defineNuxtConfig({
         }
       ],
     }
-  }
+  },
+
+  compatibilityDate: "2024-09-29"
 })

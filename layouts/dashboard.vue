@@ -10,11 +10,9 @@ const route = useRoute();
 const router = useRouter();
 
 const sock = useState("sock");
-const voiceChat = ref(null);
-const voiceStream = ref(null);
 
 (async() => {
-    if(!token.value) return;
+    if(!token.value) return router.push("/");
     
     let {data} = await useFetch(`${apiUrl}/api/auth/me`,{
         headers:{
@@ -22,7 +20,11 @@ const voiceStream = ref(null);
         }
     });
 
-    if(!data.value || !data.value.success) return token.value = null;
+    if(!data.value || !data.value.success) {
+        router.push("/")
+        return token.value = null;
+    };
+
     user.value = data.value.user;
 })();
 
@@ -51,59 +53,9 @@ const playSound = () => {
     audio.value.play();
 };
 
-const peerConnection = useState("peerConnection");
-
 const callStatus = useState("callStatus");
 
 onMounted(() => {
-    voiceChat.value = new MediaStream();
-    
-    voiceStream.value.srcObject = voiceChat.value;
-
-    const {RTCPeerConnection, RTCSessionDescription} = window;
-
-    peerConnection.value = new RTCPeerConnection({
-        configuration: {
-            offerToReceiveAudio: true,
-            offerToReceiveVideo: true
-        },
-        iceServers: [{
-            urls:[
-                "stun:stun.l.google.com:19302",
-                "stun:stun1.l.google.com:19302",
-                "stun:stun2.l.google.com:19302",
-                "stun:stun3.l.google.com:19302",
-                "stun:stun4.l.google.com:19302",
-                "stun:stun01.sipphone.com",
-                "stun:stun.ekiga.net",
-                "stun:stun.fwdnet.net",
-                "stun:stun.ideasip.com",
-                "stun:stun.iptel.org",
-                "stun:stun.rixtelecom.se",
-                "stun:stun.schlund.de",
-                "stun:stunserver.org",
-                "stun:stun.softjoys.com",
-                "stun:stun.voiparound.com",
-                "stun:stun.voipbuster.com",
-                "stun:stun.voipstunt.com",
-                "stun:stun.voxgratia.org",
-                "stun:stun.xten.com",
-            ]
-        }]
-    });
-
-    peerConnection.value.onicecandidate = (c) => {
-        if(!c.candidate) return;
-        sock.value.emit("candidate",{
-            to:callStatus.value.userId,
-            candidate:c.candidate
-        });
-    };
-
-    peerConnection.value.ontrack = (t) => {
-        voiceChat.value.addTrack(t.track);
-    };
-
     registerServiceWorker();
 
     if(user.value) {
@@ -115,12 +67,6 @@ onMounted(() => {
 
         initIO();
     }
-
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-Y7SZD3FFP8');
 
     document.addEventListener('keydown',(e) => {
         if(e.ctrlKey && e.code == "KeyK"){
@@ -145,50 +91,6 @@ onMounted(() => {
         }
     });
 
-    sock.value.on("madeOffer",({offer,from}) => {
-        playSound();
-        callStatus.value = {
-            calling:false,
-            userId:from,
-            offer:{
-                sdp:offer.sdp,
-                type:offer.type
-            }
-        };
-    });
-
-    sock.value.on("madeAnswer",async({answer,from}) => {
-        console.log(answer,from)
-        if(callStatus.value.userId != from) return;
-        console.log("ff")
-        await peerConnection.value.setRemoteDescription(new RTCSessionDescription(answer));
-    });
-
-    sock.value.on("cancelOfferClient",({from}) => {
-        if(!callStatus.value || callStatus.value.userId != from) return;
-        callStatus.value = null;
-    });
-
-    sock.value.on("rejectedOffer",({from}) => {
-        if(callStatus.value || callStatus.value.userId != from) return;
-        callStatus.value = null;
-    });
-
-    sock.value.emit("getWaitingOffers",({success,find}) => {
-        if(find.length < 1) return;
-        callStatus.value = {
-            calling:false,
-            userId:find[0]?.from,
-            offer:find[0]?.offer
-        }
-    });
-
-    sock.value.on("candidateClient",({candidate}) => {
-        console.log(peerConnection.value.remoteDescription);
-        if(!peerConnection.value.remoteDescription) return;
-        peerConnection.value.addIceCandidate(new RTCIceCandidate(candidate));
-    });
-
     audio.value = new Audio("/notif.mp3");
 });
 
@@ -202,56 +104,7 @@ const peoplesLoading = ref(true);
 const groupsLoading = ref(true);
 
 const searchModal = ref(false);
-const searchUsername = ref("");
-const searchFind = ref(null);
-const searchLoading = ref(false);
 const userModal = ref(false);
-
-const avatarFileInputChange = async(e) => {
-    let file = e.target.files[0];
-    //10 MB = 10485760 BAYT
-    if(file.size > 10485760 && !file.type.includes('image')) return;
-
-    let data = new FormData();
-    data.append('avatar', file);
-
-    let res = await fetch(`${apiUrl}/api/user/me`,{
-        method:"PUT",
-        body:data,
-        headers:{
-            Authorization:token.value
-        }
-    });
-    let json = await res.json();
-
-    if(!json.success) return;
-
-    user.value.profilePhoto = json.avatar;
-};
-
-const uploadAvatar = () => {
-    //avatarFileInput.click()
-    let input = document.createElement('input');
-    input.type = "file";
-    input.style = "display:none";
-
-    input.addEventListener('change',avatarFileInputChange)
-
-    document.body.appendChild(input);
-
-    input.click();
-};
-
-watch(searchUsername,async(val,oldVal) => {
-    if(!val) return searchFind.value = null;
-    searchLoading.value = true;
-
-    let {data} = await useFetch(`${apiUrl}/api/user/${val}`);
-    
-    searchLoading.value = false;
-
-    searchFind.value = data?.value?.find;
-});
 
 (async() => {
     let {data} = await useFetch(`${apiUrl}/api/user/`,{
@@ -274,19 +127,6 @@ watch(searchUsername,async(val,oldVal) => {
     groups.value = data.value.find;
     groupsLoading.value = false;
 })();
-
-const logout = () => {
-    router.push("/");
-    
-    token.value = null;
-    user.value = null;
-
-    try {
-        closeIO();
-    } catch (error) {
-        
-    }
-};
 
 const notifUser = ref({
     profilePhoto:"/9.png",
@@ -322,13 +162,12 @@ const closeNotif = () => {
     notifActive.value = false;
 };
 
-
+const navbarForMobile = ref(false);
 
 </script>
 
 <template>
     <div class="w-full h-full flex flex-row items-center">
-        <video class="absolute top-0 left-0" autoplay playsinline ref="voiceStream"></video>
         <div @click="closeNotif" :class="`flex flex-col items-center fixed top-5 lg:w-1/2 xl:w-1/3 w-full left-1/2 -translate-x-1/2 bg-gray-800/30 backdrop-blur-sm py-2 px-4 rounded-lg border-2 border-gray-700/30 duration-300 cursor-pointer hover:scale-110 ${notifActive ? 'opacity-100 visible -translate-y-0' : 'opacity-0 invisible -translate-y-4'}`">
             <div class="flex flex-row items-center gap-3">
                 <Profile :src="notifUser.profilePhoto" width="32" height="32"/>
@@ -338,63 +177,10 @@ const closeNotif = () => {
                 <span>You have received a new message!</span>
             </div>
         </div>
-        <div v-if="callStatus" class="right-4 top-4 fixed w-1/4 h-auto bg-gray-800/50 backdrop-blur-sm py-2 px-4 rounded-lg flex flex-col gap-3 z-50 border-2 border-gray-700/50">
-            <div class="flex flex-row items-center gap-3">
-                <Profile src="/9.png" width="32" height="32"/>
-                <span>2c166157432d5fe0</span>
-            </div>
-            <span v-if="callStatus?.calling">User calling..</span>
-            <div v-else class="flex flex-row items-center gap-3">
-                <div @click="acceptCall" class="flex items-center justify-center w-[32px] h-[32px] bg-green-600 rounded-full cursor-pointer">
-                    <i class="fa-solid fa-phone"></i>
-                </div>
-                <div @click="rejectCall" class="flex items-center justify-center w-[32px] h-[32px] bg-red-600 rounded-full cursor-pointer">
-                    <i class="fa-solid fa-phone-slash"></i>
-                </div>
-            </div>
-        </div>
-        <div :class="`w-full h-full fixed top-0 left-0 bg-black/30 z-50 flex items-center justify-center duration-300 ${searchModal ? 'opacity-100 visible' : 'opacity-0 invisible'}`">
-            <div :class="`lg:w-2/3 lg:h-2/3 w-full h-full bg-gray-800 rounded-lg flex flex-col border-2 border-gray-700 duration-300 ${searchModal ? 'scale-100' : 'scale-0'}`">
-                <div class="w-full py-2 px-4 flex flex-row items-center justify-between border-b-2 border-gray-700">
-                    <span>Search</span>
-                    <button @click="searchModal = !searchModal">X</button>
-                </div>
-                <div class="h-full flex flex-col items-center justify-center overflow-auto py-2 px-4 gap-5">
-                    <input v-model="searchUsername" class="w-full rounded-full" type="text" placeholder="username">
-                    <div v-if="searchLoading" class="w-full flex items-center justify-center">
-                        <Loading/>
-                    </div>
-                    <nuxt-link v-else-if="searchFind" @click="searchModal = false" :to="`/dashboard/${searchFind.username}`" class="flex flex-row items-center gap-3 bg-gray-700 rounded-full py-2 px-4">
-                        <Profile :src="searchFind.profilePhoto" width="32" height="32"/>
-                        <span>{{ searchFind.username }}</span>
-                    </nuxt-link>
-                    <div v-else class="flex items-center justify-center w-full">
-                        <span class="text-gray-400 select-none">User not found.. 🙁</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div v-if="user" :class="`w-full h-full fixed top-0 left-0 bg-black/30 z-50 flex items-center justify-center duration-300 ${userModal ? 'opacity-100 visible' : 'opacity-0 invisible'}`">
-            <div :class="`lg:w-2/3 lg:h-2/3 w-full h-full bg-gray-800 rounded-lg flex flex-col border-2 border-gray-700 duration-300 ${userModal ? 'scale-100' : 'scale-0'}`">
-                <div class="w-full py-2 px-4 flex flex-row items-center justify-between border-b-2 border-gray-700">
-                    <span>{{user.username}}</span>
-                    <button @click="userModal = !userModal">X</button>
-                </div>
-                <div class="h-full flex flex-col items-center overflow-auto py-2 px-4 gap-5">
-                    <div class="avatar relative cursor-pointer rounded-full" @click="uploadAvatar">
-                        <div class="absolute top-0 left-0 w-full h-full rounded-full bg-black/30 flex items-center justify-center avatarin">
-                            <i class="fa-solid fa-image"></i>
-                        </div>
-                        <Profile :src="user.profilePhoto" width="96" height="96"/>
-                    </div>
-                    <span>Max File Size: 10 MB</span>
-                    <button class="py-2 px-4 rounded-full bg-gray-700">Reset Password</button>
-                    <button class="py-2 px-4 rounded-full bg-gray-700" @click="logout">Logout</button>
-                    <nuxt-link class="text-green-400" to="/visibility">Who can see my data?</nuxt-link>
-                </div>
-            </div>
-        </div>
-        <div class="h-full w-full lg:w-1/6 p-4 bg-gray-800 hidden lg:flex flex-col items-center overflow-auto gap-5">
+        <SearchUserModal :active="searchModal" :close="() => searchModal = false"/>
+        <MyProfileModal :active="userModal" :user="user" :close="() => userModal = false"/>
+        <i @click="navbarForMobile = !navbarForMobile" class="fa-solid fa-bars fixed top-2 left-2 fa-2x block lg:opacity-0 lg:invisible lg:hidden z-50"></i>
+        <div :class="`h-full w-full lg:w-1/6 p-4 bg-gray-800 ${navbarForMobile ? 'flex' : 'hidden'} lg:flex flex-col items-center overflow-auto gap-5 fixed lg:static top-0 left-0 z-40`">
             <nuxt-link to="/dashboard/">
                 <img src="/anomz2.png" width="64" alt="">
             </nuxt-link>

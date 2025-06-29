@@ -1,5 +1,6 @@
 <script setup>
     import axios from "axios";
+    import Swal from 'sweetalert2';
 
     definePageMeta({
         middleware: [
@@ -9,7 +10,7 @@
 
     const {public:{apiUrl}} = useRuntimeConfig();
 
-    let loading = ref(false);
+    const loading = ref(false);
 
     let err = ref("");
     let result = ref(null);
@@ -20,14 +21,19 @@
 
         loading.value = true;
 
-        let res = await axios.post(`${apiUrl}/api/auth/register`);
-        let data = res.data;
+        try {
+            let res = await axios.post(`${apiUrl}/api/auth/register`);
+            let data = res.data;
 
-        if(!data.success) return err.value = data.message;
+            if(!data?.success) throw Error(data?.message);
 
-        loading.value = false;
+            loading.value = false;
 
-        result.value = data;
+            result.value = data;
+        } catch (error) {
+            loading.value = false;
+            sendError(error.message);
+        }
     };
 
     const copy = (text) => {
@@ -54,10 +60,7 @@
     <div class="w-full h-full flex items-center justify-center">
         <form @submit.prevent="generateAccount" class="lg:h-3/4 lg:w-3/4 w-full h-full flex flex-row items-center justify-center rounded-lg relative">
             <img src="/arasemr12_ubuntu_2a5cbf0a-8cac-4598-baab-b190706ee3d5.png" draggable="false" class="w-1/2 h-full rounded-tl-lg rounded-bl-lg lg:block hidden" alt="">
-            <div v-if="loading" class="w-full lg:w-1/2 bg-gray-800 rounded-tr-lg rounded-br-lg h-full flex items-center justify-center">
-                <Loading/>
-            </div>
-            <div v-else-if="result" class="w-full lg:w-1/2 bg-gray-800 rounded-tr-lg rounded-br-lg h-full justify-center flex flex-col p-4 gap-5">
+            <div v-if="result" class="w-full lg:w-1/2 bg-gray-800 rounded-tr-lg rounded-br-lg h-full justify-center flex flex-col p-4 gap-5">
                 <div class="w-full flex flex-col gap-1">
                     <label for="username">username</label>
                     <div class="w-full flex flex-row items-center bg-gray-700 py-2 px-4 rounded">
@@ -81,7 +84,10 @@
                 <nuxt-link to="/login" type="button" class="blue_rounded_btn flex flex-row items-center justify-between">Go to login page <i class="fa-solid fa-right-to-bracket"></i></nuxt-link>
             </div>
             <div v-else class="w-full lg:w-1/2 bg-gray-800 rounded-tr-lg rounded-br-lg h-full flex flex-col items-center justify-center p-4 gap-5">
-                <button type="submit" class="blue_rounded_btn">Generate a account</button>
+                <button type="submit" class="blue_rounded_btn flex flex-row items-center">
+                    <ButtonLoader size="12px" speed="2s" bg-opacity="0" color="#fff" :active="loading"/>
+                    Generate a account
+                </button>
                 <button type="button" class="green_rounded_btn">Recover a account</button>
             </div>
         </form>

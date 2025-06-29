@@ -103,8 +103,6 @@ const submit = async() => {
     message.value = "";
 };
 
-const callStatus = useState("callStatus");
-
 const copyClipBoard = (text) => navigator.clipboard.writeText(text);
 
 onMounted(() => {
@@ -178,9 +176,6 @@ const deleteMessage = (id) => {
         <div v-if="user" class="flex flex-row items-center gap-3 bg-gray-800 p-2 rounded-full">
             <Profile :src="user.profilePhoto" width="32" height="32"/>
             <span>{{ user.username }}</span>
-            <!--<nuxt-link :to="`/dashboard/${user.username}/voice`">make call</nuxt-link>-->
-            <button v-if="callStatus" @click="cancelCall">cancel call</button>
-            <button v-else @click="callUser(user.id)">make call</button>
         </div>
         <div @scroll="scroll" ref="main" class="h-full overflow-y-auto" v-auto-animate>
             <div class="w-full flex items-center justify-center" v-if="loadingNewMessages">
