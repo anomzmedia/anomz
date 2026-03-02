@@ -1,0 +1,16 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@layer components{
+  *{
+    @apply border-0 outline-none box-border p-0 m-0 scroll-smooth;
+  }
+
+  html,
+  body,
+  #__next {
+    @apply w-full h-screen bg-gray-900 text-white;
+  }
+}

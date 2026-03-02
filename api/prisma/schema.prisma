@@ -1,0 +1,121 @@
+model User {
+  id String @id @default(cuid())
+
+  username String @unique
+  password String
+
+  avatar String?
+
+  publicKey String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  conversations ConversationParticipant[]
+  conversationKeys ConversationKey[]
+  
+  createdConversations Conversation[]
+  
+  sentMessages  Message[]
+}
+
+model Conversation {
+  id String @id @default(cuid())
+
+  type        ConversationType
+  name        String?
+  description String?
+  avatar      String?
+
+  creatorId String
+  creator User @relation(fields: [creatorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  participants ConversationParticipant[]
+  messages     Message[]
+
+  encryptedKeys ConversationKey[]
+}
+
+model ConversationKey {
+  id String @id @default(cuid())
+
+  encryptedAesKey String
+
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+
+  userId String
+  user User @relation(fields: [userId], references: [id])
+}
+
+enum ConversationType {
+  DM
+  GROUP
+}
+
+model ConversationParticipant {
+  id String @id @default(cuid())
+
+  conversationId String
+  userId         String
+
+  role     ParticipantRole @default(MEMBER)
+  joinedAt DateTime        @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+}
+
+enum ParticipantRole {
+  ADMIN
+  MEMBER
+}
+
+model Message {
+  id             String @id @default(cuid())
+  conversationId String
+
+  senderId String?
+
+  content String?
+  iv String?
+  
+  type    MessageType @default(TEXT)
+
+  mediaUrl  String?
+  mediaType String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  spotifyTrackId String?
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User?        @relation(fields: [senderId], references: [id], onDelete: Cascade)
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  FILE
+  AUDIO
+  SYSTEM
+  SPOTIFY
+}
+
+generator client {
+  engineType = "binary"
+  provider   = "prisma-client-js"
+  output     = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
