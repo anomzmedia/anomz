@@ -92,7 +92,10 @@ export default function AppSideNavbar({conservations}:{conservations:Conversatio
             });
             let json:ApiResponse<Conversation> = await res.json();
 
-            console.log(json);
+            if(!json.data) return;
+
+            router.push(`/app/conversation/${json.data.id}`);
+            setSearchModal(false);
         } catch (error) {
             console.log(error);
         }
