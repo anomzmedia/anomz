@@ -59,7 +59,7 @@ checkCredentials();
 router.get("/search",async(req,res) => {
     try {
         const {q} = req.query;
-        if(!q) return;
+        if(!q) return res.status(400).json({success:false});
 
         let {data} = await axios.get(`https://api.spotify.com/v1/search?q=${encodeURIComponent(q)}&type=track&limit=10`,{
             headers:{

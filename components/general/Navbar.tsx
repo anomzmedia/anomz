@@ -33,10 +33,10 @@ export default function Navbar() {
                 )}
             </div>
         </div> */}
-            <div className="flex flex-row items-center gap-3">
+            <Link href={"/#home"} className="flex flex-row items-center gap-3">
                 <img src="/anomz.png" width={48} draggable={false} alt="" />
                 <span className="text-2xl font-bold">Anomz</span>
-            </div>
+            </Link>
             <div className="flex flex-row items-center gap-3 font-semibold">
                 <Link href={"/#home"}>Home</Link>
                 <Link href={"/#pricing"}>Pricing</Link>

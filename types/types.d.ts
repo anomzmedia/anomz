@@ -2,7 +2,7 @@ export type ConversationType = 'DM' | 'GROUP';
 
 export type ParticipantRole = 'ADMIN' | 'MEMBER';
 
-export type MessageType = 'TEXT' | 'IMAGE' | 'VIDEO' | 'FILE' | 'AUDIO' | 'SYSTEM';
+export type MessageType = 'TEXT' | 'IMAGE' | 'VIDEO' | 'FILE' | 'AUDIO' | 'SYSTEM' | 'SPOTIFY';
 
 export interface User {
   id: string;
@@ -51,4 +51,5 @@ export interface Message {
   deletedAt: Date | null;
   conversation?: Conversation;
   sender?: User;
+  spotifyTrackId: string;
 }

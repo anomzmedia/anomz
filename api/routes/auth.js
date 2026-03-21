@@ -18,7 +18,7 @@ const limiter = rateLimit({
     message:{success:false,message:"You can create a maximum of 2 user in 1 day."},
 });
 
-router.post('/register',limiter,async(req,res) => {
+router.post('/register',limiter,async(req,res,next) => {
     const username = crpyto.randomBytes(8).toString('hex');
     const password = crpyto.randomBytes(16).toString('hex');
 
@@ -36,11 +36,11 @@ router.post('/register',limiter,async(req,res) => {
     
         res.status(201).json({success:true,message:"Created!",data:user});
     } catch (error) {
-        res.status(500).json({success:false,message:error.message});
+        next(error);
     }
 });
 
-router.post('/login',async(req,res) => {
+router.post('/login',async(req,res,next) => {
     try {
         const {username,password} = await loginBody.validateAsync(req.body);
     
@@ -63,27 +63,33 @@ router.post('/login',async(req,res) => {
 
         res.status(200).json({success:true,message:"Login!",user,data:{user,token}});
     } catch (error) {
-        res.status(500).json({success:false,message:error.message});
+        next(error);
     }
 });
 
-router.get('/me',auth,(req,res) => {
-    res.json({success:true,message:"Success!",user:req.user});
+router.get('/me',async(req,res,next) => {
+    try {
+        res.json({success:true,message:"Success!",user:req.user});        
+    } catch (error) {
+        next(error)
+    }
 });
 
 router.post('/reset',auth,async(req,res) => {
     const password = crpyto.randomBytes(16).toString('hex');
+
+    const hash = await argon2.hash(password);
 
     await prisma.user.update({
         where:{
             id:req.user.id
         },
         data:{
-            password
+            password:hash,
         }
     });
 
-    res.json({success:true,message:"Success!",password});
+    res.json({success:true,message:"Success!",data:password});
 });
 
 module.exports = router;

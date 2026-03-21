@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 import { getPrivateKey, getToken } from "@/lib/auth";
 import { encryptWithRSA, fetchUser, fetchUserPublicKey } from "@/lib/key";
 
-export default function AppSideNavbar({conservations}:{conservations:Conversation[]}) {
+export default function AppSideNavbar({conservations,activeForMobile}:{conservations:Conversation[],activeForMobile:boolean}) {
     const auth = useAuth();
 
     const [searchModal,setSearchModal] = useState<boolean>(false);
@@ -108,7 +108,7 @@ export default function AppSideNavbar({conservations}:{conservations:Conversatio
     };
 
     return (
-        <div className="w-1/6 bg-gray-800 h-screen flex flex-col items-start justify-between gap-3 overflow-auto py-4 px-4">
+        <>
             <Modal title="Search" className="flex-1 min-h-0 overflow-auto w-full py-2 px-4 flex flex-col items-center gap-3 pt-12" open={searchModal} onClose={() => setSearchModal(false)}>
                 <Input value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-full" placeholder="Username"/>
                 {searchResult.length == 0 ? (<span className="text-gray-400 font-semibold select-none">Not Found</span>) : (<></>)}
@@ -120,45 +120,47 @@ export default function AppSideNavbar({conservations}:{conservations:Conversatio
                     </div>
                 ))}
             </Modal>
-            <div className="flex flex-col items-start w-full gap-3">
-                <div className="flex flex-col gap-3 items-center justify-center w-full select-none">
-                    <img src="/anomz.png" width={64} alt="" draggable={false} />
-                    <Link className="text-lg font-semibold" href={"/app"}>Anomz</Link>
-                </div>
-                <div onClick={() => setSearchModal(true)} className="border-2 border-gray-700 w-full rounded-full relative cursor-pointer">
-                    <Input className="w-full h-full bg-transparent rounded-full border-0! outline-0! cursor-pointer" readOnly placeholder="Username"/>
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-row items-center gap-1 select-none sepia">
-                        <div className="py-1 px-2 bg-gray-600 rounded-full text-xs text-gray-300">
-                            <span>CTRL</span>
-                        </div>
-                        <div className="py-1 px-2 bg-gray-600 rounded-full text-xs text-gray-300">
-                            <span>K</span>
+            <div className={`lg:w-1/6 w-full fixed left-0 top-0 z-40 bg-gray-800 h-screen ${activeForMobile ? 'opacity-100 visible' : 'opacity-0 invisible lg:opacity-100 lg:visible -translate-x-full lg:translate-x-0'} duration-300 flex flex-col items-start justify-between gap-3 overflow-auto py-4 px-4`}>
+                <div className="flex flex-col items-start w-full gap-3">
+                    <div className="flex flex-col gap-3 items-center justify-center w-full select-none">
+                        <img src="/anomz.png" width={64} alt="" draggable={false} />
+                        <Link className="text-lg font-semibold" href={"/app"}>Anomz</Link>
+                    </div>
+                    <div onClick={() => setSearchModal(true)} className="border-2 border-gray-700 w-full rounded-full relative cursor-pointer">
+                        <Input className="w-full h-full bg-transparent rounded-full border-0! outline-0! cursor-pointer" readOnly placeholder="Username"/>
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-row items-center gap-1 select-none sepia">
+                            <div className="py-1 px-2 bg-gray-600 rounded-full text-xs text-gray-300">
+                                <span>CTRL</span>
+                            </div>
+                            <div className="py-1 px-2 bg-gray-600 rounded-full text-xs text-gray-300">
+                                <span>K</span>
+                            </div>
                         </div>
                     </div>
+                    <span className="text-xs uppercase font-bold select-none text-gray-400">Chats</span>
+                    {conservations.map((i) => (
+                        <Link key={i.id} href={`/app/conversation/${i.id}`} className="w-full bg-gray-700 hover:bg-gray-600 duration-300 cursor-pointer py-2 px-4 rounded flex flex-row items-center gap-3">
+                            <img src="/anomz.png" width={32} draggable={false} alt="" />
+                            <span>{getConversationName(auth.user,i)}</span>
+                        </Link>
+                    ))}
                 </div>
-                <span className="text-xs uppercase font-bold select-none text-gray-400">Chats</span>
-                {conservations.map((i) => (
-                    <Link key={i.id} href={`/app/conversation/${i.id}`} className="w-full bg-gray-700 hover:bg-gray-600 duration-300 cursor-pointer py-2 px-4 rounded flex flex-row items-center gap-3">
-                        <img src="/anomz.png" width={32} draggable={false} alt="" />
-                        <span>{getConversationName(auth.user,i)}</span>
-                    </Link>
-                ))}
+                <div className="w-full flex flex-col gap-3">
+                    <Hr/>
+                    <Button onClick={logout}>Logout</Button>
+                    <Button className="w-full rounded flex flex-row items-center gap-3 group">
+                        <div className="relative">
+                            <img src={auth.user?.avatar || "/anomz.png"} width={32} alt="" />
+                            <span className="absolute bottom-0 right-0 w-[8px] h-[8px] bg-green-600 rounded-full"></span>
+                        </div>
+                        <span>{auth.user?.username}</span>
+                    </Button>
+                    <Button className="w-full bg-transparent rounded-full border-2 border-white hover:bg-white hover:text-black flex flex-row items-center justify-between group">
+                        <span>Settings</span>
+                        <Settings className="group-hover:rotate-45 duration-300" size={16}/>
+                    </Button>
+                </div>
             </div>
-            <div className="w-full flex flex-col gap-3">
-                <Hr/>
-                <Button onClick={logout}>Logout</Button>
-                <Button className="w-full rounded flex flex-row items-center gap-3 group">
-                    <div className="relative">
-                        <img src={auth.user?.avatar || "/anomz.png"} width={32} alt="" />
-                        <span className="absolute bottom-0 right-0 w-[8px] h-[8px] bg-green-600 rounded-full"></span>
-                    </div>
-                    <span>{auth.user?.username}</span>
-                </Button>
-                <Button className="w-full bg-transparent rounded-full border-2 border-white hover:bg-white hover:text-black flex flex-row items-center justify-between group">
-                    <span>Settings</span>
-                    <Settings className="group-hover:rotate-45 duration-300" size={16}/>
-                </Button>
-            </div>
-        </div>
+        </>
     );
 }

@@ -7,12 +7,24 @@ const jwt = require('jsonwebtoken');
 const http = require('http');
 const fileUpload = require('express-fileupload');
 const { default: ImgurClient } = require('imgur');
+const winston = require('winston');
 
 const {PrismaPg} = require("@prisma/adapter-pg");
 const { PrismaClient } = require("./prisma/generated");
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
 globalThis.prisma = new PrismaClient({ adapter });
+
+globalThis.logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  defaultMeta: { service: 'user-service' },
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'combined.log' }),
+  ],
+});
 
 const app = express();
 
@@ -124,44 +136,18 @@ app.get('/api/stats',async(req,res) => {
     res.json({users,messages});
 });
 
-/*(async() => {
-    let conv = await prisma.conversation.create({
-        data:{
-            name:"7be1d14fb4122fcf and bac4f46ab51ef89f",
-            type:"DM",
-            avatar:null,
-            participants:{
-                create:[
-                    {
-                        user:{
-                            connect:{
-                                username:"7be1d14fb4122fcf"
-                            }
-                        }
-                    },
-                    {
-                        user:{
-                            connect:{
-                                username:"bac4f46ab51ef89f"
-                            }
-                        }
-                    }
-                ]
-            },
-            messages:{
-                create:{
-                    content:"Conversation created...",
-                    type:"SYSTEM",
-                }
-            }
-        }
-    });
+app.use((err, req, res, next) => {
+  logger.error('Unhandled Error', {
+    message: err.message,
+    stack: err.stack,
+    method: req.method,
+    url: req.originalUrl,
+  });
 
-    console.log(conv);
-})();*/
+  res.status(500).json({ error: 'Internal Server Error' });
+});
 
 (async() => {
-
     /*for (let i = 0; i < 30; i++) {
         await prisma.message.create({
             data:{

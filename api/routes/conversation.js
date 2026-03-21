@@ -53,7 +53,7 @@ router.get('/',auth,async(req,res) => {
     }
 });
 
-router.post("/create",async(req,res) => {
+router.post("/create",auth,async(req,res) => {
     try {
 
     } catch (error) {
@@ -260,7 +260,7 @@ router.post('/:id/messages/create',auth,async(req,res) => {
     try {
         const {id} = req.params;
 
-        const {content,iv} = await createMessageBody.validateAsync(req.body);
+        const {content,iv,spotifyTrackId,type} = await createMessageBody.validateAsync(req.body);
 
         const conversation = await prisma.conversation.findFirst({
             where:{
@@ -294,7 +294,8 @@ router.post('/:id/messages/create',auth,async(req,res) => {
                 iv,
                 conversationId:id,
                 senderId:req.user.id,
-                type:"TEXT",
+                type,
+                spotifyTrackId,
             },
             include:{
                 sender:{

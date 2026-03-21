@@ -6,7 +6,7 @@ import { prettyDate } from "@/lib/date";
 import { useAuth } from "@/store/auth";
 import { ApiResponse } from "@/types/api";
 import { Conversation, Message } from "@/types/types";
-import { BarChart, BarrelIcon, Fingerprint, Lock, Menu, Send, ShoppingCart, X } from "lucide-react";
+import { BarChart, BarrelIcon, Fingerprint, Lock, Menu, Music, Send, ShoppingCart, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { KeyboardEventHandler, ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -15,6 +15,8 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 import autoAnimate from "@formkit/auto-animate";
 import { decryptWithAES, decryptWithRSA, encryptWithAES, generateConversationFingerprint, getConversationAES, getConversationMembersPublicKey } from "@/lib/key";
 import Hr from "@/components/general/Hr";
+import MessageComponent from "@/components/general/Message";
+import SongSearcher from "@/components/general/conversation/SongSearcher";
 
 export default function ConversationId() {
     const socket = getSocket();
@@ -115,7 +117,12 @@ export default function ConversationId() {
             if(data.conversation.id != id) return;
 
             setAesKey((aes) => {
-                if(!aes) return aes;
+                if(!aes || !data?.data?.content) {
+                    setMessages((prevMessages) => [...prevMessages,data.data]);
+                    if(Math.abs(messagesDiv.current?.scrollHeight-messagesDiv.current?.clientHeight-messagesDiv.current?.scrollTop) < 10) scrollTopMessages();
+
+                    return aes;
+                };
 
                 (async() => {
                     const content = await decryptWithAES(data.data.content,data.data.iv,aes);
@@ -162,7 +169,8 @@ export default function ConversationId() {
                 },
                 body:JSON.stringify({
                     content,
-                    iv
+                    iv,
+                    type:"TEXT",
                 }),
                 method:"POST",
             });
@@ -213,6 +221,28 @@ export default function ConversationId() {
 
     const [conversationMenu,setConversationMenu] = useState<boolean>(false);
 
+    const sendSongMessage = async(trackId:string) => {
+        const token = getToken();
+
+        let res = await fetch(`/api/conversation/${id}/messages/create`,{
+            headers:{
+                Authorization:token,
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                spotifyTrackId:trackId,
+                type:"SPOTIFY",
+            }),
+            method:"POST",
+        });
+
+        let json:ApiResponse<Message> = await res.json();
+
+        if(json.success) setSongSarcherModal(false);
+    };
+
+    const [songSearcherModal,setSongSarcherModal] = useState<boolean>(false);
+
     if(!conversation) return (<></>);
 
     return (
@@ -235,7 +265,7 @@ export default function ConversationId() {
                     <span className="text-xs font-bold select-none text-gray-400">MEMBERS ({conversation.participants?.length})</span>
                     <div className="flex flex-col items-start gap-3 select-none font-semibold">
                         {conversation.participants?.map((par) => (
-                            <div className="flex flex-row items-center gap-3">
+                            <div key={par.user.id} className="flex flex-row items-center gap-3">
                                 <img src="/anomz.png" draggable={false} width={32} alt="" />
                                 <span>{par.user?.username} - {par.role}</span>
                             </div>
@@ -255,20 +285,15 @@ export default function ConversationId() {
                     flexBasis:"0px"
                 }}>
                     {messages.map((_, i) => (
-                        <div key={_.id} className={`w-full flex flex-col ${_.sender?.id == auth.user?.id ? 'items-end' : 'items-start'}`}>
-                            <div className={`${_.sender?.id == auth.user?.id ? 'bg-blue-600' : 'bg-gray-600'} py-2 px-4 rounded flex flex-col items-start`}>
-                                <div className="flex flex-row items-center gap-3 mb-2">
-                                    <img className="select-none" src="/anomz.png" width={32} draggable={false} alt="" />
-                                    <span>{_.sender?.username || "System"}</span>
-                                </div>
-                                <span style={{whiteSpace:"pre-wrap"}}>{_.content}</span>
-                                <span className="text-xs text-blue-300">{prettyDate(new Date(_.createdAt))}</span>
-                            </div>
-                        </div>
+                        <MessageComponent message={_} key={_.id}/>
                     ))}
                 </div>
-                <div className="shadow-xl w-full bg-gray-600 rounded flex flex-row items-center gap-3 pr-6 py-2 px-4">
-                    <Textarea onKeyDown={keydown} value={message} onChange={(e) => setMessage(e.target.value)} rows={1} className="w-full h-full border-0! rounded bg-transparent" placeholder="Message..."/>
+                <div className="relative shadow-xl w-full bg-gray-600 rounded flex flex-row items-center gap-3 pr-6 py-2 px-4">
+                    <Textarea onKeyDown={keydown} value={message} onChange={(e) => setMessage(e.target.value)} rows={message.split("\n").length || 1} className="w-full h-full border-0! rounded bg-transparent" placeholder="Message..."/>
+                    <button className="">
+                        <SongSearcher selectSong={sendSongMessage} active={songSearcherModal} setActive={setSongSarcherModal}/>
+                        <Music onClick={() => setSongSarcherModal((e) => !e)} className="cursor-pointer song-searcher-opener" size={24}/>
+                    </button>
                     <button onClick={createMessage}>
                         <Send className="cursor-pointer" size={24}/>
                     </button>

@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import Button from "../ui/Button";
 import Modal from "../ui/Modal";
 import { verifyKeyPair } from "@/lib/key";
+import { Menu } from "lucide-react";
 
 export default function AppLayout({ children }: {children:ReactNode}) {
   const auth = useAuth();
@@ -88,6 +89,12 @@ export default function AppLayout({ children }: {children:ReactNode}) {
     input.click();
   };
 
+  const [mobileSideNavbar,setMobileSideNavbar] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMobileSideNavbar(false);
+  },[router.asPath]);
+
   if(auth.loading || loading || !auth.user) return (
     <div className="w-screen h-screen flex flex-col items-center justify-center">
       <img src="/anomz.png" width={128} className="animate-spin mb-4" draggable={false} alt="" />
@@ -111,12 +118,13 @@ export default function AppLayout({ children }: {children:ReactNode}) {
                 <Button style={"red"}>Generate New Private Key</Button>
             </div>
           </Modal>
-            <div className="w-full flex flex-row items-start">
-              <AppSideNavbar conservations={conversations}/>
-              <div className="w-5/6 h-screen max-h-screen overflow-auto">
-                {children}
-              </div>
+          <Menu onClick={() => setMobileSideNavbar((e) => !e)} className="lg:hidden block fixed z-50 top-4 left-4 cursor-pointer" size={32}/>
+          <div className="w-full flex flex-row items-start justify-end">
+            <AppSideNavbar conservations={conversations} activeForMobile={mobileSideNavbar}/>
+            <div className="lg:w-5/6 w-full h-screen max-h-screen overflow-auto">
+              {children}
             </div>
+          </div>
         </div>
       }
     </>
